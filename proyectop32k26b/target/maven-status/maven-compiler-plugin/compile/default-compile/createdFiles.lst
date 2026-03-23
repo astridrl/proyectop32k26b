@@ -8,6 +8,7 @@ Vista\frmLogin$2.class
 Vista\frmMantenimientoUsuario$9.class
 Vista\frmLogin.class
 Vista\MdiSeguridad$11.class
+Modelo\AplicacionesDAO.class
 Vista\frmLogin$1.class
 Vista\MdiSeguridad$8.class
 Vista\MdiSeguridad$1.class
@@ -36,6 +37,7 @@ Modelo\UsuarioDAO.class
 Controlador\clsUsuario.class
 Vista\frmLogin$3.class
 Controlador\clsBitacora.class
+Controlador\clsAplicaciones.class
 Vista\MdiSeguridad$2.class
 Controlador\clsUsuarioConectado.class
 Vista\frmMantenimientoUsuario.class
