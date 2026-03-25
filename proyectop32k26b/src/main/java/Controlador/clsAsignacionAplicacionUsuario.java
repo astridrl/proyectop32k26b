@@ -1,130 +1,79 @@
 package Controlador;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-//Karina Alejandra Arriaza Ortiz 9959-24-14190
+import Modelo.AsignacionAplicacionUsuarioDAO;
+import java.util.List;
+
 public class clsAsignacionAplicacionUsuario {
 
-    // Llaves primaria/foránea (ajustado a la BD)
     private int Aplcodigo;
     private int UsuId;
-
-    // Permisos
     private String APLUins;
     private String APLUsel;
     private String APLUupd;
     private String APLUdel;
     private String APLUrep;
 
-    // Constructor vacío
-    public clsAsignacionAplicacionUsuario() {
-    }
+    public clsAsignacionAplicacionUsuario() {}
 
-    // Constructor completo
-    public clsAsignacionAplicacionUsuario(int Aplcodigo, int UsuId, String APLUins, String APLUsel, String APLUupd, String APLUdel, String APLUrep) {
+    public clsAsignacionAplicacionUsuario(int Aplcodigo, int UsuId,
+            String APLUins, String APLUsel, String APLUupd,
+            String APLUdel, String APLUrep) {
         this.Aplcodigo = Aplcodigo;
-        this.UsuId = UsuId;
-        this.APLUins = APLUins;
-        this.APLUsel = APLUsel;
-        this.APLUupd = APLUupd;
-        this.APLUdel = APLUdel;
-        this.APLUrep = APLUrep;
+        this.UsuId     = UsuId;
+        this.APLUins   = APLUins;
+        this.APLUsel   = APLUsel;
+        this.APLUupd   = APLUupd;
+        this.APLUdel   = APLUdel;
+        this.APLUrep   = APLUrep;
     }
 
     // GETTERS Y SETTERS
+    public int getAplcodigo() { return Aplcodigo; }
+    public void setAplcodigo(int Aplcodigo) { this.Aplcodigo = Aplcodigo; }
+    public int getUsuId() { return UsuId; }
+    public void setUsuId(int UsuId) { this.UsuId = UsuId; }
+    public String getAPLUins() { return APLUins; }
+    public void setAPLUins(String APLUins) { this.APLUins = APLUins; }
+    public String getAPLUsel() { return APLUsel; }
+    public void setAPLUsel(String APLUsel) { this.APLUsel = APLUsel; }
+    public String getAPLUupd() { return APLUupd; }
+    public void setAPLUupd(String APLUupd) { this.APLUupd = APLUupd; }
+    public String getAPLUdel() { return APLUdel; }
+    public void setAPLUdel(String APLUdel) { this.APLUdel = APLUdel; }
+    public String getAPLUrep() { return APLUrep; }
+    public void setAPLUrep(String APLUrep) { this.APLUrep = APLUrep; }
 
-    public int getAplcodigo() {
-        return Aplcodigo;
+    // ── MÉTODOS DE NEGOCIO ────────────────────────────────────────────────
+
+    public int setAsignarAplicacion(clsAsignacionAplicacionUsuario asignacion) {
+        return new AsignacionAplicacionUsuarioDAO().ingresaAsignacion(asignacion);
+    }
+    
+    public int setModificarPermisos(clsAsignacionAplicacionUsuario asig) {
+    return new AsignacionAplicacionUsuarioDAO().actualizaAsignacion(asig);
     }
 
-    public void setAplcodigo(int Aplcodigo) {
-        this.Aplcodigo = Aplcodigo;
+    public int setQuitarAplicacion(clsAsignacionAplicacionUsuario asignacion) {
+        return new AsignacionAplicacionUsuarioDAO().borrarAsignacion(asignacion);
     }
 
-    public int getUsuId() {
-        return UsuId;
+    public List<clsAplicaciones> getAplicacionesAsignadas(int usuId) {
+        return new AsignacionAplicacionUsuarioDAO().getAplicacionesAsignadas(usuId);
     }
 
-    public void setUsuId(int UsuId) {
-        this.UsuId = UsuId;
+    public List<clsAplicaciones> getAplicacionesDisponibles(int usuId) {
+        return new AsignacionAplicacionUsuarioDAO().getAplicacionesDisponibles(usuId);
     }
-
-    public String getAPLUins() {
-        return APLUins;
-    }
-
-    public void setAPLUins(String APLUins) {
-        this.APLUins = APLUins;
-    }
-
-    public String getAPLUsel() {
-        return APLUsel;
-    }
-
-    public void setAPLUsel(String APLUsel) {
-        this.APLUsel = APLUsel;
-    }
-
-    public String getAPLUupd() {
-        return APLUupd;
-    }
-
-    public void setAPLUupd(String APLUupd) {
-        this.APLUupd = APLUupd;
-    }
-
-    public String getAPLUdel() {
-        return APLUdel;
-    }
-
-    public void setAPLUdel(String APLUdel) {
-        this.APLUdel = APLUdel;
-    }
-
-    public String getAPLUrep() {
-        return APLUrep;
-    }
-
-    public void setAPLUrep(String APLUrep) {
-        this.APLUrep = APLUrep;
-    }
-
-    // GENERAR BITÁCORA 
-    public clsBitacora generarBitacora(String accion) {
-
-        clsBitacora bitacora = new clsBitacora();
-
-        // Usuario conectado (compatible con su clase)
-        bitacora.setUsucodigo(clsUsuarioConectado.getUsuId());
-
-        // Aplicación actual
-        bitacora.setAplcodigo(this.Aplcodigo);
-
-        // Fecha como STRING (como ustedes lo manejan)
-        LocalDateTime ahora = LocalDateTime.now();
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        bitacora.setBitfecha(ahora.format(formato));
-
-        // Datos básicos
-        bitacora.setBitip("127.0.0.1");
-        bitacora.setBitequipo("PC");
-
-        // Acción realizada
-        bitacora.setBitaccion(accion);
-
-        return bitacora;
-    }
+    
+    public clsAsignacionAplicacionUsuario getPermisos(int usuId, int aplCodigo) {
+    return new AsignacionAplicacionUsuarioDAO()
+            .getPermisos(usuId, aplCodigo);
+}
+    
 
     @Override
     public String toString() {
-        return "clsAsignacionAplicacionUsuario{" +
-                "Aplcodigo=" + Aplcodigo +
-                ", UsuId=" + UsuId +
-                ", APLUins='" + APLUins + '\'' +
-                ", APLUsel='" + APLUsel + '\'' +
-                ", APLUupd='" + APLUupd + '\'' +
-                ", APLUdel='" + APLUdel + '\'' +
-                ", APLUrep='" + APLUrep + '\'' +
-                '}';
+        return "clsAsignacionAplicacionUsuario{Aplcodigo=" + Aplcodigo
+                + ", UsuId=" + UsuId + '}';
     }
 }

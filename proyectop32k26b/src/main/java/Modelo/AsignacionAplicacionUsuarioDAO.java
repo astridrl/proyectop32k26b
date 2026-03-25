@@ -1,13 +1,15 @@
 package Modelo;
-// Angoly Camila Araujo Mayen 9959-24-17623
+
 import Controlador.clsAsignacionAplicacionUsuario;
+import Controlador.clsAplicaciones;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import Modelo.Conexion;
 
 public class AsignacionAplicacionUsuarioDAO {
 
-    //  INSERTAR
+    // INSERTAR asignación
     public int ingresaAsignacion(clsAsignacionAplicacionUsuario asignacion) {
         int resultado = 0;
 
@@ -34,29 +36,88 @@ public class AsignacionAplicacionUsuarioDAO {
 
         return resultado;
     }
+    
+public int actualizaAsignacion(clsAsignacionAplicacionUsuario asig) {
 
-    // CONSULTAR TODOS
-    public List<clsAsignacionAplicacionUsuario> consultaAsignaciones() {
-        List<clsAsignacionAplicacionUsuario> lista = new ArrayList<>();
+    int resultado = 0;
 
-        String sql = "SELECT * FROM asignacionaplicacionusuarios";
+    String sql = "UPDATE asignacionaplicacionusuarios "
+            + "SET APLUins=?, APLUsel=?, APLUupd=?, APLUdel=?, APLUrep=? "
+            + "WHERE Aplcodigo=? AND UsuId=?";
+
+    try (Connection conn = Conexion.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, asig.getAPLUins());
+        ps.setString(2, asig.getAPLUsel());
+        ps.setString(3, asig.getAPLUupd());
+        ps.setString(4, asig.getAPLUdel());
+        ps.setString(5, asig.getAPLUrep());
+
+        ps.setInt(6, asig.getAplcodigo());
+        ps.setInt(7, asig.getUsuId());
+
+        resultado = ps.executeUpdate();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return resultado;
+}
+
+    // ELIMINAR asignación
+    public int borrarAsignacion(clsAsignacionAplicacionUsuario asignacion) {
+
+        int resultado = 0;
+
+        String sql = "DELETE FROM asignacionaplicacionusuarios "
+                   + "WHERE Aplcodigo=? AND UsuId=?";
 
         try (Connection conn = Conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, asignacion.getAplcodigo());
+            stmt.setInt(2, asignacion.getUsuId());
+
+            resultado = stmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        }
+
+        return resultado;
+    }
+
+
+    // APLICACIONES YA ASIGNADAS
+    public List<clsAplicaciones> getAplicacionesAsignadas(int usuId) {
+
+        List<clsAplicaciones> lista = new ArrayList<>();
+
+        String sql =
+                "SELECT a.APLCODIGO, a.APLNOMBRE, a.APLESTADO "
+              + "FROM Aplicaciones a "
+              + "INNER JOIN asignacionaplicacionusuarios au "
+              + "ON a.APLCODIGO = au.Aplcodigo "
+              + "WHERE au.UsuId = ?";
+
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, usuId);
+
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                clsAsignacionAplicacionUsuario asignacion = new clsAsignacionAplicacionUsuario();
 
-                asignacion.setAplcodigo(rs.getInt("Aplcodigo"));
-                asignacion.setUsuId(rs.getInt("UsuId"));
-                asignacion.setAPLUins(rs.getString("APLUins"));
-                asignacion.setAPLUsel(rs.getString("APLUsel"));
-                asignacion.setAPLUupd(rs.getString("APLUupd"));
-                asignacion.setAPLUdel(rs.getString("APLUdel"));
-                asignacion.setAPLUrep(rs.getString("APLUrep"));
+                clsAplicaciones app = new clsAplicaciones();
 
-                lista.add(asignacion);
+                app.setAplCodigo(rs.getInt("APLCODIGO"));
+                app.setAplNombre(rs.getString("APLNOMBRE"));
+                app.setAplEstado(rs.getString("APLESTADO"));
+
+                lista.add(app);
             }
 
         } catch (SQLException ex) {
@@ -66,85 +127,81 @@ public class AsignacionAplicacionUsuarioDAO {
         return lista;
     }
 
-    // CONSULTAR POR ID
-    public clsAsignacionAplicacionUsuario consultaAsignacionPorId(clsAsignacionAplicacionUsuario asignacion) {
+// OBTENER PERMISOS DE UNA ASIGNACION
+public clsAsignacionAplicacionUsuario getPermisos(int usuId, int aplCodigo) {
 
-        String sql = "SELECT * FROM asignacionaplicacionusuarios WHERE Aplcodigo=? AND UsuId=?";
-        clsAsignacionAplicacionUsuario resultado = null;
+    clsAsignacionAplicacionUsuario asig = null;
+
+    String sql = "SELECT * FROM asignacionaplicacionusuarios "
+            + "WHERE UsuId=? AND Aplcodigo=?";
+
+    try (Connection conn = Conexion.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, usuId);
+        ps.setInt(2, aplCodigo);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+
+            asig = new clsAsignacionAplicacionUsuario();
+
+            asig.setUsuId(rs.getInt("UsuId"));
+            asig.setAplcodigo(rs.getInt("Aplcodigo"));
+
+            asig.setAPLUins(rs.getString("APLUins"));
+            asig.setAPLUsel(rs.getString("APLUsel"));
+            asig.setAPLUupd(rs.getString("APLUupd"));
+            asig.setAPLUdel(rs.getString("APLUdel"));
+            asig.setAPLUrep(rs.getString("APLUrep"));
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return asig;
+}
+
+    // APLICACIONES DISPONIBLES (CORREGIDO)
+    public List<clsAplicaciones> getAplicacionesDisponibles(int usuId) {
+
+        List<clsAplicaciones> lista = new ArrayList<>();
+
+        String sql =
+                "SELECT APLCODIGO, APLNOMBRE, APLESTADO "
+              + "FROM Aplicaciones "
+              + "WHERE APLCODIGO NOT IN ("
+              + "  SELECT Aplcodigo "
+              + "  FROM asignacionaplicacionusuarios "
+              + "  WHERE UsuId = ?"
+              + ") "
+              + "AND APLESTADO = 1";   // ← CORREGIDO
 
         try (Connection conn = Conexion.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, asignacion.getAplcodigo());
-            stmt.setInt(2, asignacion.getUsuId());
+            stmt.setInt(1, usuId);
 
             ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                resultado = new clsAsignacionAplicacionUsuario();
+            while (rs.next()) {
 
-                resultado.setAplcodigo(rs.getInt("Aplcodigo"));
-                resultado.setUsuId(rs.getInt("UsuId"));
-                resultado.setAPLUins(rs.getString("APLUins"));
-                resultado.setAPLUsel(rs.getString("APLUsel"));
-                resultado.setAPLUupd(rs.getString("APLUupd"));
-                resultado.setAPLUdel(rs.getString("APLUdel"));
-                resultado.setAPLUrep(rs.getString("APLUrep"));
+                clsAplicaciones app = new clsAplicaciones();
+
+                app.setAplCodigo(rs.getInt("APLCODIGO"));
+                app.setAplNombre(rs.getString("APLNOMBRE"));
+                app.setAplEstado(rs.getString("APLESTADO"));
+
+                lista.add(app);
             }
 
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
         }
 
-        return resultado;
+        return lista;
     }
 
-    // ACTUALIZAR
-    public int actualizaAsignacion(clsAsignacionAplicacionUsuario asignacion) {
-        int resultado = 0;
-
-        String sql = "UPDATE asignacionaplicacionusuarios SET "
-                + "APLUins=?, APLUsel=?, APLUupd=?, APLUdel=?, APLUrep=? "
-                + "WHERE Aplcodigo=? AND UsuId=?";
-
-        try (Connection conn = Conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, asignacion.getAPLUins());
-            stmt.setString(2, asignacion.getAPLUsel());
-            stmt.setString(3, asignacion.getAPLUupd());
-            stmt.setString(4, asignacion.getAPLUdel());
-            stmt.setString(5, asignacion.getAPLUrep());
-            stmt.setInt(6, asignacion.getAplcodigo());
-            stmt.setInt(7, asignacion.getUsuId());
-
-            resultado = stmt.executeUpdate();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace(System.out);
-        }
-
-        return resultado;
-    }
-
-    // 🔹 ELIMINAR
-    public int borrarAsignacion(clsAsignacionAplicacionUsuario asignacion) {
-        int resultado = 0;
-
-        String sql = "DELETE FROM asignacionaplicacionusuarios WHERE Aplcodigo=? AND UsuId=?";
-
-        try (Connection conn = Conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, asignacion.getAplcodigo());
-            stmt.setInt(2, asignacion.getUsuId());
-
-            resultado = stmt.executeUpdate();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace(System.out);
-        }
-
-        return resultado;
-    }
 }
