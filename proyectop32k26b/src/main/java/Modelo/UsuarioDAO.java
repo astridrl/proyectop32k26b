@@ -3,12 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+//Marco. Hernandez 9959-24-6201 
+//Marco. Hernandez 24-marzo-2026 1. mantenimiento agregar utilidad de bitacora *posible fallo en login BD no acepta id "foreign key fails"e
 package Modelo;
+
 
 import Controlador.clsUsuario;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import Modelo.BitacoraDAO;
+import Controlador.clsUsuarioConectado;
 
 /**
  *
@@ -83,6 +89,21 @@ public class UsuarioDAO {
             stmt.setString(8, usuario.getUsuDireccion());
             System.out.println("ejecutando query:" + SQL_INSERT);
             rows = stmt.executeUpdate();
+            //
+   if (rows > 0) {
+    if (clsUsuarioConectado.getUsuId() > 0) {
+        BitacoraDAO bitacora = new BitacoraDAO();
+        System.out.println("Usuario conectado: " + clsUsuarioConectado.getUsuId());
+        bitacora.insert(
+            clsUsuarioConectado.getUsuId(),
+            10001,
+            "INSERT usuario: " + usuario.getUsuNombre()
+        );
+    } else {
+        System.out.println("No se insertó en bitácora: usuario conectado inválido");
+    }
+}
+            
             System.out.println("Registros afectados:" + rows);
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
@@ -110,9 +131,24 @@ public class UsuarioDAO {
             stmt.setString(6, usuario.getUsuCorreo());
             stmt.setString(7, usuario.getUsuTelefono());
             stmt.setString(8, usuario.getUsuDireccion());
-            stmt.setInt(10, usuario.getUsuId());
+            stmt.setInt(9, usuario.getUsuId());
             
             rows = stmt.executeUpdate();
+            
+ if (rows > 0) {
+    if (clsUsuarioConectado.getUsuId() > 0) {
+        BitacoraDAO bitacora = new BitacoraDAO();
+        bitacora.insert(
+            clsUsuarioConectado.getUsuId(),
+            10001,
+            "UPDATE usuario: " + usuario.getUsuNombre()
+        );
+    } else {
+        System.out.println("No se insertó en bitácora: usuario conectado inválido");
+    }
+}
+            
+            
             System.out.println("Registros actualizado:" + rows);
 
         } catch (SQLException ex) {
@@ -126,26 +162,45 @@ public class UsuarioDAO {
     }
 
     public int borrarUsuarios(clsUsuario usuario) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        int rows = 0;
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    int rows = 0;
 
-        try {
-            conn = Conexion.getConnection();
-            System.out.println("Ejecutando query:" + SQL_DELETE);
-            stmt = conn.prepareStatement(SQL_DELETE);
-            stmt.setInt(1, usuario.getUsuId());
-            rows = stmt.executeUpdate();
-            System.out.println("Registros eliminados:" + rows);
-        } catch (SQLException ex) {
-            ex.printStackTrace(System.out);
-        } finally {
-            Conexion.close(stmt);
-            Conexion.close(conn);
+    try {
+        conn = Conexion.getConnection();
+        System.out.println("Ejecutando query:" + SQL_DELETE);
+
+        // MOSTRAR USUARIO CONECTADO
+        System.out.println("Usuario conectado antes de eliminar: " + clsUsuarioConectado.getUsuId());
+
+        // BITACORA ANTES DEL DELETE
+        if (clsUsuarioConectado.getUsuId() > 0) {
+            System.out.println("Insertando en bitacora antes del delete...");
+
+            BitacoraDAO bitacora = new BitacoraDAO();
+            bitacora.insert(
+                clsUsuarioConectado.getUsuId(),
+                10001,
+                "DELETE usuario ID: " + usuario.getUsuId()
+            );
         }
 
-        return rows;
+        // DELETE
+        stmt = conn.prepareStatement(SQL_DELETE);
+        stmt.setInt(1, usuario.getUsuId());
+        rows = stmt.executeUpdate();
+
+        System.out.println("Registros eliminados: " + rows);
+
+    } catch (SQLException ex) {
+        ex.printStackTrace(System.out);
+    } finally {
+        Conexion.close(stmt);
+        Conexion.close(conn);
     }
+
+    return rows;
+}
 
     public clsUsuario consultaUsuariosPorNombre(clsUsuario usuario) {
         Connection conn = null;
