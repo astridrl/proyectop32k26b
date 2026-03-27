@@ -207,5 +207,20 @@ public class clsUsuario {
     {
         UsuarioDAO daousuario = new UsuarioDAO();
         return daousuario.actualizaUsuarios(usuario);
-    }              
+    }
+    
+    //Modificación realizada por Dulce María Martínez Arévalo - 9959-24-4564
+    //Permite realizar el cambio de contraseña
+    //Método para cambiar contraseña
+    public int setRestablecerContrasena(String nuevaContrasena) {
+    UsuarioDAO daousuario = new UsuarioDAO();
+    // Primero traer todos los datos del usuario
+    clsUsuario usuarioCompleto = new clsUsuario();
+    usuarioCompleto.setUsuId(this.UsuId);
+    usuarioCompleto = daousuario.consultaUsuariosPorId(usuarioCompleto);
+    // Solo cambiar la contraseña
+    usuarioCompleto.setUsuContrasena(nuevaContrasena);
+    // Guardar todo
+    return daousuario.actualizaUsuarios(usuarioCompleto);
+    }
 }
