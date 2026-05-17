@@ -30,6 +30,7 @@ public class frmCalculoComisiones extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         NOMEMPLEADO = new javax.swing.JTextField();
         rdbvendedores = new javax.swing.JRadioButton();
         rdblinea = new javax.swing.JRadioButton();
@@ -47,6 +48,7 @@ public class frmCalculoComisiones extends javax.swing.JInternalFrame {
 
         setClosable(true);
 
+        buttonGroup1.add(rdbvendedores);
         rdbvendedores.setText("Vendedores");
         rdbvendedores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -54,6 +56,7 @@ public class frmCalculoComisiones extends javax.swing.JInternalFrame {
             }
         });
 
+        buttonGroup1.add(rdblinea);
         rdblinea.setText("Linea");
         rdblinea.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -61,6 +64,7 @@ public class frmCalculoComisiones extends javax.swing.JInternalFrame {
             }
         });
 
+        buttonGroup1.add(rdbmarca);
         rdbmarca.setText("Marca");
         rdbmarca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -68,6 +72,7 @@ public class frmCalculoComisiones extends javax.swing.JInternalFrame {
             }
         });
 
+        buttonGroup1.add(rdbproducto);
         rdbproducto.setText("Producto");
         rdbproducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,36 +115,35 @@ public class frmCalculoComisiones extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(calcularcomisiones)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(36, 36, 36)
-                        .addComponent(IDEMPLEADO, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btncargardatos)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(rdbproducto, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(rdbmarca, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(rdblinea, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(rdbvendedores, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btncalcular))
+                            .addComponent(btncalcular)
+                            .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(IDEMPLEADO, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btncargardatos)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 693, Short.MAX_VALUE)
                             .addComponent(NOMEMPLEADO))))
                 .addGap(14, 14, 14))
             .addGroup(layout.createSequentialGroup()
-                .addGap(265, 265, 265)
+                .addGap(272, 272, 272)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(9, 9, 9)
                 .addComponent(jLabel3)
-                .addGap(15, 15, 15)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(IDEMPLEADO, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -165,7 +169,7 @@ public class frmCalculoComisiones extends javax.swing.JInternalFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(calcularcomisiones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         pack();
@@ -190,8 +194,14 @@ public class frmCalculoComisiones extends javax.swing.JInternalFrame {
     private void btncargardatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncargardatosActionPerformed
         // Inicia un bloque de seguridad para capturar cualquier error de conexión o base de datos
         try {
+            String idTexto = IDEMPLEADO.getText().trim();
+            int idEmpleado = Integer.parseInt(idTexto);
+
+            // Cargar nombre del empleado
+            String nombre = dao.obtenerNombreEmpleado(idEmpleado);
+            NOMEMPLEADO.setText(nombre);
             // Solicita al DAO que traiga todos los registros de la base de datos y los guarde en una lista
-            List<clsComisionVentas> listaComisiones = dao.obtenerDatosComisiones();
+            List<clsComisionVentas> listaComisiones = dao.obtenerDatosComisiones(idEmpleado);
 
             // Obtiene el modelo de la tabla visual para poder manipular sus filas y columnas
             DefaultTableModel modelo = (DefaultTableModel) tabladatos.getModel();
@@ -266,6 +276,7 @@ public class frmCalculoComisiones extends javax.swing.JInternalFrame {
     private javax.swing.JTextField NOMEMPLEADO;
     private javax.swing.JButton btncalcular;
     private javax.swing.JButton btncargardatos;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JTextField calcularcomisiones;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

@@ -46,6 +46,42 @@ private static final String SQL_QUERY =
     "SELECT Aplcodigo, Percodigo, APLPins, APLPsel, APLPupd, APLPdel, APLPdel FROM asignacionaplicacionperfil WHERE Percodigo=?"; // Nota: APLPdel está repetido (posible error)
     
 
+public List<String> obtenerNombresPerfiles() {
+    List<String> listaPerfiles = new ArrayList<>();
+    String sql = "SELECT Pernombre FROM perfiles"; 
+    
+    try (Connection conn = Conexion.getConnection(); 
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+         
+        while (rs.next()) {
+            listaPerfiles.add(rs.getString("Pernombre"));
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al cargar perfiles: " + e.toString());
+    }
+    return listaPerfiles;
+} 
+public int obtenerIdPorNombre(String nombrePerfil) {
+    int idPerfil = -1;
+    String sql = "SELECT Percodigo FROM perfiles WHERE Pernombre = ?"; 
+    
+    try (Connection conn = Conexion.getConnection(); 
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+         
+        stmt.setString(1, nombrePerfil);
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                idPerfil = rs.getInt("Percodigo");
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al buscar ID por nombre: " + e.toString());
+    }
+    return idPerfil;
+}
+
+
 // Método que verifica si un perfil existe en la tabla perfiles
 public boolean verificarExistenciaPerfil(int perCodigo) {
 

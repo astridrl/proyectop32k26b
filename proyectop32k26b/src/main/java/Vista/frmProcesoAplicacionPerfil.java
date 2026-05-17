@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.DefaultListModel;
 import java.awt.HeadlessException;
+import javax.swing.DefaultComboBoxModel;
 
 
 
@@ -47,6 +48,8 @@ public class frmProcesoAplicacionPerfil extends javax.swing.JInternalFrame {
     
     public frmProcesoAplicacionPerfil() {
         initComponents();
+        
+        cargarComboPerfiles(); // Esto ejecuta la carga al abrir la ventana
     // 1. Permitir que la ventana se pueda cerrar
     setClosable(true); 
     // 2. Permitir que se pueda minimizar (opcional)
@@ -84,6 +87,18 @@ public class frmProcesoAplicacionPerfil extends javax.swing.JInternalFrame {
    // btnReportes.setEnabled( permisosDAO.puedeReportar (usuId, 10) );
 }
     
+     private void cargarComboPerfiles() {
+    AsignacionAplicacionPerfilDAO dao = new AsignacionAplicacionPerfilDAO();
+    List<String> perfiles = dao.obtenerNombresPerfiles();
+    
+    comboPerfil.removeAllItems(); // Limpia elementos previos
+    comboPerfil.addItem("Seleccione un perfil..."); // Opción por defecto
+    
+    for (String perfil : perfiles) {
+        comboPerfil.addItem(perfil);
+    }
+}
+
 private void moverAAsignadas() {
     //Obtener el modelo actual de la lista
     DefaultListModel modeloDis = (DefaultListModel) AppDis.getModel();
@@ -111,7 +126,7 @@ private void moverADisponibles() {
     if (seleccionado != null) {
         try {
             int idApp = Integer.parseInt(seleccionado.toString());
-            int idPerfil = Integer.parseInt(codigoIngresado.getText());
+            int idPerfil = Integer.parseInt(codigoPerfil.getText());
 
             AsignacionAplicacionPerfilDAO dao = new AsignacionAplicacionPerfilDAO();
             clsAsignacionAplicacionPerfil asignacionABorrar = new clsAsignacionAplicacionPerfil();
@@ -158,7 +173,7 @@ private void pasarTodosAAsignadas() {
 private void regresarTodosADisponibles() {
   DefaultListModel modeloAsig = (DefaultListModel) AppAsig.getModel();
     DefaultListModel modeloDis = (DefaultListModel) AppDis.getModel();
-    String idPerfilStr = codigoIngresado.getText();
+    String idPerfilStr = codigoPerfil.getText();
 
     if (idPerfilStr.isEmpty()) {
         JOptionPane.showMessageDialog(this, "No hay un perfil seleccionado.");
@@ -265,7 +280,7 @@ private void activarPermisos() {
         jLabel4 = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
-        codigoIngresado = new javax.swing.JTextField();
+        codigoPerfil = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -275,6 +290,7 @@ private void activarPermisos() {
         jRadioButton3 = new javax.swing.JRadioButton();
         appSelect = new javax.swing.JLabel();
         jRadioButton4 = new javax.swing.JRadioButton();
+        comboPerfil = new javax.swing.JComboBox<>();
 
         setTitle("Asignacion Aplicación Perfil");
 
@@ -366,6 +382,8 @@ private void activarPermisos() {
 
         jRadioButton4.setText("Delete");
 
+        comboPerfil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -401,17 +419,18 @@ private void activarPermisos() {
                                     .addComponent(guardar))))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(codigoIngresado, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnObtener))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(93, 93, 93)
-                                .addComponent(appSelect)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(93, 93, 93)
+                        .addComponent(appSelect)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addComponent(codigoPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(comboPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnObtener)
+                        .addGap(40, 40, 40))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -419,20 +438,21 @@ private void activarPermisos() {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(codigoIngresado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnObtener))
+                    .addComponent(codigoPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnObtener)
+                    .addComponent(comboPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addComponent(appSelect)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -460,38 +480,47 @@ private void activarPermisos() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2)))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
     private void btnObtenerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerActionPerformed
         // TODO add your handling code here:
-        try {
-            int idPerfil = Integer.parseInt(codigoIngresado.getText());
-            AsignacionAplicacionPerfilDAO dao = new AsignacionAplicacionPerfilDAO();
+        if (comboPerfil.getSelectedIndex() <= 0) { 
+        JOptionPane.showMessageDialog(this, "Por favor, seleccione un perfil de la lista.");
+        return; 
+    }
+    
+    // 2. Obtener el nombre del perfil seleccionado
+    String nombreSeleccionado = comboPerfil.getSelectedItem().toString();
+    AsignacionAplicacionPerfilDAO dao = new AsignacionAplicacionPerfilDAO();
+    
+    // 3. Obtener el ID numérico a partir del nombre en la base de datos
+    int idPerfil = dao.obtenerIdPorNombre(nombreSeleccionado);
 
-            if (dao.verificarExistenciaPerfil(idPerfil)) {
-                  AppAsig.clearSelection(); 
-                  limpiarPermisos(); 
-                // Si existe, procedes a cargar las listas
-                cargarListas(idPerfil);
+    // 4. Tu lógica original adaptada al ID encontrado
+    if (idPerfil != -1 && dao.verificarExistenciaPerfil(idPerfil)) { 
+         codigoPerfil.setText(String.valueOf(idPerfil));
+        AppAsig.clearSelection(); 
+        limpiarPermisos(); 
+        
+        // Proceder a cargar las listas con el ID recuperado
+        cargarListas(idPerfil);
 
-                // --- REGISTRO EN BITÁCORA COMO CONSULTA ---
-                BitacoraDAO bitacoradao = new BitacoraDAO();
-                // Usamos el ID del usuario conectado y la acción "CONSULTA"
-                bitacoradao.insert(clsUsuarioConectado.getUsuId(), codigoAplicacion, "Consulta");
-                // ------------------------------------------
-            } else {
-                // Si NO existe, alerta y limpieza
-                JOptionPane.showMessageDialog(this, "ERROR: El código de perfil " + idPerfil + " no existe en el sistema.");
-                limpiarListasYPermisos();
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Por favor, ingrese un código numérico válido.");
-        }
+        // --- REGISTRO EN BITÁCORA COMO CONSULTA ---
+        BitacoraDAO bitacoradao = new BitacoraDAO();
+        bitacoradao.insert(clsUsuarioConectado.getUsuId(), codigoAplicacion, "Consulta");
+        // ------------------------------------------
+    } else {
+        // Alerta y limpieza si el ID es incorrecto
+        JOptionPane.showMessageDialog(this, "ERROR: El perfil '" + nombreSeleccionado + "' no es válido en el sistema.");
+        limpiarListasYPermisos();
+    }
+
 
     }//GEN-LAST:event_btnObtenerActionPerformed
 
@@ -539,7 +568,7 @@ private void activarPermisos() {
 
     private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
         // TODO add your handling code here:
-        String idPerfilStr = codigoIngresado.getText();
+        String idPerfilStr = codigoPerfil.getText();
         Object appSeleccionada = AppAsig.getSelectedValue();
 
         if (idPerfilStr.isEmpty() || appSeleccionada == null) {
@@ -636,7 +665,7 @@ private void activarPermisos() {
             try {
                 // Convertimos el valor seleccionado a entero (ID de la aplicación)
                 int idApp = Integer.parseInt(seleccionado.toString());
-                int idPerfil = Integer.parseInt(codigoIngresado.getText());
+                int idPerfil = Integer.parseInt(codigoPerfil.getText());
 
                 // Consultar a la BD los permisos específicos para este Perfil y App
                 AsignacionAplicacionPerfilDAO dao = new AsignacionAplicacionPerfilDAO();
@@ -674,7 +703,8 @@ private void activarPermisos() {
     private javax.swing.JButton btnPasarUno;
     private javax.swing.JButton btnRegresarTodos;
     private javax.swing.JButton btnRegresarUno;
-    private javax.swing.JTextField codigoIngresado;
+    private javax.swing.JTextField codigoPerfil;
+    private javax.swing.JComboBox<String> comboPerfil;
     private javax.swing.JButton guardar;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
