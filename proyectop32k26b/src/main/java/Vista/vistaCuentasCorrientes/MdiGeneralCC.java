@@ -313,7 +313,7 @@ public class MdiGeneralCC extends javax.swing.JFrame {
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         // TODO add your handling code here:
         System.out.println("entre a Movimiento Transaccion");
-        CCconciliacionBancaria ventana = new CCconciliacionBancaria();
+        TransaccionesCC ventana = new TransaccionesCC();
         jDesktopPane1.add(ventana);
         Dimension desktopSize = jDesktopPane1.getSize();
         Dimension FrameSize = ventana.getSize();

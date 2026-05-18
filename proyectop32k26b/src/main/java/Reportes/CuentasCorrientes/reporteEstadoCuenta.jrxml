@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="27af2ca8-ff77-4469-8d5f-dd9cef7d2922">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT 
+    m.Mccid,
+    m.Mccfecha,
+    m.Mccconcepto,
+    m.Mccmodulo,
+    m.Mcctipo,
+    CASE WHEN m.Mcctipo = 'CARGO' THEN m.Mccmonto ELSE 0.00 END AS Cargo,
+    CASE WHEN m.Mcctipo = 'ABONO' THEN ABS(m.Mccmonto) ELSE 0.00 END AS Abono,
+    m.Mccmonto,
+    m.Mccsaldo AS SaldoCorte,
+    COALESCE(c.Clinombre, p.Pronombre) AS NombreEntidad
+FROM movimientoscc m
+LEFT JOIN clientes c ON m.Cliid = c.Cliid
+LEFT JOIN proveedores p ON m.Procodigo = p.Procodigo
+ORDER BY m.Mccfecha ASC, m.Mccid ASC;]]>
+	</queryString>
+	<field name="Mccid" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Mccfecha" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Mccconcepto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Mccmodulo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Mcctipo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Cargo" class="java.math.BigDecimal"/>
+	<field name="Abono" class="java.math.BigDecimal"/>
+	<field name="Mccmonto" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="SaldoCorte" class="java.math.BigDecimal"/>
+	<field name="NombreEntidad" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="70" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="0" y="13" width="263" height="33" uuid="b8e5fbcd-58d6-4700-86ae-a48f4093e7ae"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Estado Cuenta]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="35" width="555" height="1" uuid="8a887c1d-4233-4552-8419-7a50b5995e80"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement style="Column header" x="0" y="20" width="113" height="15" uuid="d6fd0dad-9f95-4a82-a201-395e5e232725"/>
+				<text><![CDATA[Mccfecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="113" y="20" width="55" height="15" uuid="2e3026ec-8fc0-49a5-a48c-bbbaea035ccf"/>
+				<text><![CDATA[Mccconcepto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="168" y="20" width="55" height="15" uuid="45bfdd1d-42b7-4629-bbf3-6c0ee0ee3266"/>
+				<text><![CDATA[Mccmodulo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="223" y="20" width="55" height="15" uuid="04b97380-3f62-4d1d-a595-bfae0cbbfd99"/>
+				<text><![CDATA[Mcctipo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="278" y="20" width="55" height="15" uuid="2f23f881-5874-47ae-aafa-5e3afd86f491"/>
+				<text><![CDATA[Cargo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="333" y="20" width="55" height="15" uuid="a713f8c2-3061-402a-ab05-41df0ad46c39"/>
+				<text><![CDATA[Abono]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="388" y="20" width="55" height="15" uuid="da456314-3c94-40a2-b935-925cca217eb2"/>
+				<text><![CDATA[Mccmonto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="443" y="20" width="55" height="15" uuid="26a47a5d-45b7-48a8-a509-b8a20651ec93"/>
+				<text><![CDATA[SaldoCorte]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="498" y="20" width="55" height="15" uuid="09d3df53-91ff-42ac-998c-3ee08cc1ca78"/>
+				<text><![CDATA[NombreEntidad]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1" uuid="4538f530-d223-4584-be7a-72c4b9703ee3"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement style="Detail" x="0" y="1" width="113" height="15" uuid="f5315457-75cc-4e4b-adb7-142987a335c9"/>
+				<textFieldExpression><![CDATA[""+$F{Mccfecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="113" y="1" width="55" height="15" uuid="52104255-1f78-4aea-98c5-d484da50aac5"/>
+				<textFieldExpression><![CDATA[$F{Mccconcepto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="168" y="1" width="55" height="15" uuid="f1feb9bd-468a-4a72-bcaa-55f0f0565d88"/>
+				<textFieldExpression><![CDATA[$F{Mccmodulo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="223" y="1" width="55" height="15" uuid="c1d02a93-c210-4b14-ac69-8fbd6c6e9e7b"/>
+				<textFieldExpression><![CDATA[$F{Mcctipo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="278" y="1" width="55" height="15" uuid="b0f5722d-7482-4764-b167-8f4556804059"/>
+				<textFieldExpression><![CDATA[$F{Cargo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="333" y="1" width="55" height="15" uuid="e92c6f52-2cbe-4226-b4a7-011097226bf5"/>
+				<textFieldExpression><![CDATA[$F{Abono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="388" y="1" width="55" height="15" uuid="eebb5674-6ca6-4135-9584-c81c7fcc1ffa"/>
+				<textFieldExpression><![CDATA[$F{Mccmonto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="443" y="1" width="55" height="15" uuid="43127dec-5f3e-4b9f-a600-8d21071a5cea"/>
+				<textFieldExpression><![CDATA[$F{SaldoCorte}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="498" y="1" width="55" height="15" uuid="209c7eed-eb6d-433a-8d46-8e58c95ed173"/>
+				<textFieldExpression><![CDATA[$F{NombreEntidad}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="f7051fd7-2ee5-4c92-8246-e8de62c85510"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="Column header" x="433" y="0" width="80" height="20" uuid="c782da9d-d5a2-428d-a407-4b795be68f47"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement style="Column header" x="513" y="0" width="40" height="20" uuid="2e1c5638-de3e-40b5-a30a-7fa5c9016e04"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement style="Column header" x="0" y="0" width="197" height="20" uuid="54c9328f-f55d-4680-8212-d854edd91eda"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
