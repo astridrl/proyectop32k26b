@@ -10,7 +10,7 @@ import java.sql.*;
  * @author ferito
  */
 public class Conexion { //aquí se encuentra la conexion a la BD llamada proyecto
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/sig";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3307/sig";
     private static final String JDBC_USER = "usuprueba";
     private static final String JDBC_PASS = "123456";
 
