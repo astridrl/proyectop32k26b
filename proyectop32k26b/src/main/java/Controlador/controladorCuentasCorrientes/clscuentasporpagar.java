@@ -14,8 +14,8 @@ public class clscuentasporpagar {
     private int Acrecodigo;
     private int Venid;
     private String Cppfechaemision;
-    private float Cppmontototal;
-    private float Cppsaldopendiente;
+    private double Cppmontototal;
+    private double Cppsaldopendiente;
     private char Cppestado;
     private int TTid;
     private int Cpporigenid;
@@ -25,7 +25,7 @@ public class clscuentasporpagar {
     }
     
     //Constructor con parametros
-    public clscuentasporpagar(int Cppcodigo, int Procodigo, int Acrecodigo, int Venid, String Cppfechaemision, float Cppmontototal, float Cppsaldopendiente, char Cppestado, int TTid, int Cpporigenid) {
+    public clscuentasporpagar(int Cppcodigo, int Procodigo, int Acrecodigo, int Venid, String Cppfechaemision, double Cppmontototal, double Cppsaldopendiente, char Cppestado, int TTid, int Cpporigenid) {
         this.Cppcodigo = Cppcodigo;
         this.Procodigo = Procodigo;
         this.Acrecodigo = Acrecodigo;
@@ -54,11 +54,11 @@ public class clscuentasporpagar {
     public String getCppfechaemision() {return Cppfechaemision;}
     public void setCppfechaemision(String Cppfechaemision) {this.Cppfechaemision = Cppfechaemision;}
     
-    public float getCppcmontototal() {return Cppmontototal;}
-    public void setCppcmontototal(float Cppcmontotal) {this.Cppmontototal = Cppmontototal;}
+    public double getCppmontototal() {return Cppmontototal;}
+    public void setCppmontototal(double Cppmontototal) {this.Cppmontototal = Cppmontototal;}
 
-    public float getCppsaldopendiente() {return Cppsaldopendiente;}
-    public void setCppsaldopendiente(float Cppsaldopendiente) {this.Cppsaldopendiente = Cppsaldopendiente;}
+    public double getCppsaldopendiente() {return Cppsaldopendiente;}
+    public void setCppsaldopendiente(double Cppsaldopendiente) {this.Cppsaldopendiente = Cppsaldopendiente;}
 
     public char getCppestado() {return Cppestado;}
     public void setCppestado(char Cppestado) {this.Cppestado = Cppestado;}

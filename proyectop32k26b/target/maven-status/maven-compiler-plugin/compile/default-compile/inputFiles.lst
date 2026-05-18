@@ -4,6 +4,7 @@ C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\Pr
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Controlador\Bancos\clsCuentaBancaria.java
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Controlador\controladorPlanilla\prueba1.java
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Modelo\Bancos\BancoDAO.java
+C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Modelo\modeloCuentasCorrientes\PagoEmisionDAO.java
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Modelo\AsignacionPerfilUsuarioDAO.java
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Modelo\PerfilDAO.java
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Vista\Bancos\MdiBancos.java
@@ -35,6 +36,7 @@ C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\Pr
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Modelo\modeloCuentasCorrientes\provicionalDao.java
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Controlador\clsPerfil.java
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Vista\frmProcesoPerfilUsuario.java
+C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Controlador\controladorCuentasCorrientes\clsPagosEmision.java
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Modelo\MovimientoTransaccionesDAO.java
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Controlador\Bancos\clsConciliacionBancaria.java
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Controlador\Bancos\clsMovimientoBancario.java
@@ -72,3 +74,4 @@ C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\Pr
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Controlador\clsMovimientoTransacciones.java
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Controlador\ComisionesVentas\clsReportes.java
 C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Modelo\Bancos\TipoCuentaDAO.java
+C:\Users\miais\Documents\programacion\programacion III\PrograIII\Reposirotios\ProyIII2k26\proyectop32k26b\proyectop32k26b\src\main\java\Vista\vistaCuentasCorrientes\FrmPagoEmision.java

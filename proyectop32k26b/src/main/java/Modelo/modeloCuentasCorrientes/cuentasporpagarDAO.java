@@ -16,18 +16,18 @@ import java.util.List;
  * @author dulce
  */
 public class cuentasporpagarDAO {
-    private static final String SQL_SELECT = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontotal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar";
-    private static final String SQL_INSERT = "INSERT INTO cuentasporpagar (Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontotal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid) VALUES(?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?";
-    private static final String SQL_UPDATE = "UPDATE cuentasporpagar SET Procodigo=?, Acrecodigo=?, Venid=?, Cppfechaemision=?, Cppmontotal=?, Cppsaldopendiente=?, Cppestado=?, TTid=?, Cpporigenid=?  WHERE Cppcodigo = ?";
+    private static final String SQL_SELECT = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontototal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar";
+    private static final String SQL_INSERT = "INSERT INTO cuentasporpagar (Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontototal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid) VALUES(?, ?, ?, NOW(), ?, ?, ?, ?, ?)";
+    private static final String SQL_UPDATE = "UPDATE cuentasporpagar SET Procodigo=?, Acrecodigo=?, Venid=?, Cppfechaemision=?, Cppmontototal=?, Cppsaldopendiente=?, Cppestado=?, TTid=?, Cpporigenid=?  WHERE Cppcodigo = ?";
     private static final String SQL_DELETE = "DELETE FROM cuentasporpagar WHERE Cppcodigo=?";
     //Se agregarán diferentes QUERYS para variedad de opciones al momento de buscar una cuenta por pagar.
-    private static final String SQL_QUERY_POR_CODIGO = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontotal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppcodigo=?";
-    private static final String SQL_QUERY_POR_PROVEEDOR = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontotal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Procodigo=?";
-    private static final String SQL_QUERY_POR_ACREEDOR = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontotal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Acrecodigo=?";
-    private static final String SQL_QUERY_POR_ESTADO = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontotal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppestado=?";
-    private static final String SQL_QUERY_POR_FECHAS = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontotal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppfechaemision BETWEEN ? AND ?";
-    private static final String SQL_QUERY_POR_MONTO = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontotal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppmontotal=?";
-    private static final String SQL_QUERY_POR_SALDO = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontotal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppsaldopendiente=?";
+    private static final String SQL_QUERY_POR_CODIGO = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontototal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppcodigo=?";
+    private static final String SQL_QUERY_POR_PROVEEDOR = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontototal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Procodigo=?";
+    private static final String SQL_QUERY_POR_ACREEDOR = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontototal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Acrecodigo=?";
+    private static final String SQL_QUERY_POR_ESTADO = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontototal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppestado=?";
+    private static final String SQL_QUERY_POR_FECHAS = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontototal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppfechaemision BETWEEN ? AND ?";
+    private static final String SQL_QUERY_POR_MONTO = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontototal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppmontototal=?";
+    private static final String SQL_QUERY_POR_SALDO = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontototal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppsaldopendiente=?";
     
     //SELECT trae todos los registros 
     
@@ -48,8 +48,8 @@ public class cuentasporpagarDAO {
                 int Acrecodigo       = rs.getInt("Acrecodigo");
                 int Venid            = rs.getInt("Venid");
                 String Cppfechaemision = rs.getString("Cppfechaemision");
-                float Cppmontototal  = rs.getFloat("Cppmontotal");
-                float Cppsaldopendiente = rs.getFloat("Cppsaldopendiente");
+                double Cppmontototal  = rs.getDouble("Cppmontototal");
+                double Cppsaldopendiente = rs.getDouble("Cppsaldopendiente");
                 char Cppestado       = rs.getString("Cppestado").charAt(0);
                 int TTid             = rs.getInt("TTid");
                 int Cpporigenid      = rs.getInt("Cpporigenid");
@@ -60,7 +60,7 @@ public class cuentasporpagarDAO {
                 cxp.setAcrecodigo(Acrecodigo);
                 cxp.setVenid(Venid);
                 cxp.setCppfechaemision(Cppfechaemision);
-                cxp.setCppcmontototal(Cppmontototal);
+                cxp.setCppmontototal(Cppmontototal);
                 cxp.setCppsaldopendiente(Cppsaldopendiente);
                 cxp.setCppestado(Cppestado);
                 cxp.setTTid(TTid);
@@ -87,11 +87,20 @@ public class cuentasporpagarDAO {
         try {
             conn = Conexion.getConnection();
             stmt = conn.prepareStatement(SQL_INSERT);
-            stmt.setInt(1, cxp.getProcodigo());
-            stmt.setInt(2, cxp.getAcrecodigo());
+            if (cxp.getProcodigo() == 0) {
+                stmt.setNull(1, java.sql.Types.INTEGER);
+            } else {
+                stmt.setInt(1, cxp.getProcodigo());
+            }
+
+            if (cxp.getAcrecodigo() == 0) {
+                stmt.setNull(2, java.sql.Types.INTEGER);
+            } else {
+                stmt.setInt(2, cxp.getAcrecodigo());
+            }
             stmt.setInt(3, cxp.getVenid());
-            stmt.setFloat(4, cxp.getCppcmontototal());
-            stmt.setFloat(5, cxp.getCppsaldopendiente());
+            stmt.setDouble(4, cxp.getCppmontototal());
+            stmt.setDouble(5, cxp.getCppsaldopendiente());
             stmt.setString(6, String.valueOf(cxp.getCppestado()));
             stmt.setInt(7, cxp.getTTid());
             stmt.setInt(8, cxp.getCpporigenid());
@@ -121,8 +130,8 @@ public class cuentasporpagarDAO {
             stmt.setInt(2, cxp.getAcrecodigo());
             stmt.setInt(3, cxp.getVenid());
             stmt.setString(4, cxp.getCppfechaemision());
-            stmt.setFloat(5, cxp.getCppcmontototal());
-            stmt.setFloat(6, cxp.getCppsaldopendiente());
+            stmt.setDouble(5, cxp.getCppmontototal());
+            stmt.setDouble(6, cxp.getCppsaldopendiente());
             stmt.setString(7, String.valueOf(cxp.getCppestado()));
             stmt.setInt(8, cxp.getTTid());
             stmt.setInt(9, cxp.getCpporigenid());
@@ -180,8 +189,8 @@ public class cuentasporpagarDAO {
                 cxp.setAcrecodigo(rs.getInt("Acrecodigo"));
                 cxp.setVenid(rs.getInt("Venid"));
                 cxp.setCppfechaemision(rs.getString("Cppfechaemision"));
-                cxp.setCppcmontototal(rs.getFloat("Cppmontotal"));
-                cxp.setCppsaldopendiente(rs.getFloat("Cppsaldopendiente"));
+                cxp.setCppmontototal(rs.getDouble("Cppmontototal"));
+                cxp.setCppsaldopendiente(rs.getDouble("Cppsaldopendiente"));
                 cxp.setCppestado(rs.getString("Cppestado").charAt(0));
                 cxp.setTTid(rs.getInt("TTid"));
                 cxp.setCpporigenid(rs.getInt("Cpporigenid"));
@@ -212,8 +221,8 @@ public class cuentasporpagarDAO {
                 cxp.setAcrecodigo(rs.getInt("Acrecodigo"));
                 cxp.setVenid(rs.getInt("Venid"));
                 cxp.setCppfechaemision(rs.getString("Cppfechaemision"));
-                cxp.setCppcmontototal(rs.getFloat("Cppmontotal"));
-                cxp.setCppsaldopendiente(rs.getFloat("Cppsaldopendiente"));
+                cxp.setCppmontototal(rs.getDouble("Cppmontototal"));
+                cxp.setCppsaldopendiente(rs.getDouble("Cppsaldopendiente"));
                 cxp.setCppestado(rs.getString("Cppestado").charAt(0));
                 cxp.setTTid(rs.getInt("TTid"));
                 cxp.setCpporigenid(rs.getInt("Cpporigenid"));
@@ -248,8 +257,8 @@ public class cuentasporpagarDAO {
                 cxp.setAcrecodigo(rs.getInt("Acrecodigo"));
                 cxp.setVenid(rs.getInt("Venid"));
                 cxp.setCppfechaemision(rs.getString("Cppfechaemision"));
-                cxp.setCppcmontototal(rs.getFloat("Cppmontotal"));
-                cxp.setCppsaldopendiente(rs.getFloat("Cppsaldopendiente"));
+                cxp.setCppmontototal(rs.getDouble("Cppmontototal"));
+                cxp.setCppsaldopendiente(rs.getDouble("Cppsaldopendiente"));
                 cxp.setCppestado(rs.getString("Cppestado").charAt(0));
                 cxp.setTTid(rs.getInt("TTid"));
                 cxp.setCpporigenid(rs.getInt("Cpporigenid"));
@@ -285,8 +294,8 @@ public class cuentasporpagarDAO {
                 cxp.setAcrecodigo(rs.getInt("Acrecodigo"));
                 cxp.setVenid(rs.getInt("Venid"));
                 cxp.setCppfechaemision(rs.getString("Cppfechaemision"));
-                cxp.setCppcmontototal(rs.getFloat("Cppmontotal"));
-                cxp.setCppsaldopendiente(rs.getFloat("Cppsaldopendiente"));
+                cxp.setCppmontototal(rs.getDouble("Cppmontototal"));
+                cxp.setCppsaldopendiente(rs.getDouble("Cppsaldopendiente"));
                 cxp.setCppestado(rs.getString("Cppestado").charAt(0));
                 cxp.setTTid(rs.getInt("TTid"));
                 cxp.setCpporigenid(rs.getInt("Cpporigenid"));
@@ -322,8 +331,8 @@ public class cuentasporpagarDAO {
                 cxp.setAcrecodigo(rs.getInt("Acrecodigo"));
                 cxp.setVenid(rs.getInt("Venid"));
                 cxp.setCppfechaemision(rs.getString("Cppfechaemision"));
-                cxp.setCppcmontototal(rs.getFloat("Cppmontotal"));
-                cxp.setCppsaldopendiente(rs.getFloat("Cppsaldopendiente"));
+                cxp.setCppmontototal(rs.getDouble("Cppmontototal"));
+                cxp.setCppsaldopendiente(rs.getDouble("Cppsaldopendiente"));
                 cxp.setCppestado(rs.getString("Cppestado").charAt(0));
                 cxp.setTTid(rs.getInt("TTid"));
                 cxp.setCpporigenid(rs.getInt("Cpporigenid"));
@@ -360,8 +369,8 @@ public class cuentasporpagarDAO {
                 cxp.setAcrecodigo(rs.getInt("Acrecodigo"));
                 cxp.setVenid(rs.getInt("Venid"));
                 cxp.setCppfechaemision(rs.getString("Cppfechaemision"));
-                cxp.setCppcmontototal(rs.getFloat("Cppmontotal"));
-                cxp.setCppsaldopendiente(rs.getFloat("Cppsaldopendiente"));
+                cxp.setCppmontototal(rs.getDouble("Cppmontototal"));
+                cxp.setCppsaldopendiente(rs.getDouble("Cppsaldopendiente"));
                 cxp.setCppestado(rs.getString("Cppestado").charAt(0));
                 cxp.setTTid(rs.getInt("TTid"));
                 cxp.setCpporigenid(rs.getInt("Cpporigenid"));
@@ -378,7 +387,7 @@ public class cuentasporpagarDAO {
     }
 
     // Query por monto total
-    public List<clscuentasporpagar> queryPorMonto(float Cppmontototal) {
+    public List<clscuentasporpagar> queryPorMonto(double Cppmontototal) {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -388,7 +397,7 @@ public class cuentasporpagarDAO {
         try {
             conn = Conexion.getConnection();
             stmt = conn.prepareStatement(SQL_QUERY_POR_MONTO);
-            stmt.setFloat(1, Cppmontototal);
+            stmt.setDouble(1, Cppmontototal);
             rs = stmt.executeQuery();
             while (rs.next()) {
                 cxp = new clscuentasporpagar();
@@ -397,8 +406,8 @@ public class cuentasporpagarDAO {
                 cxp.setAcrecodigo(rs.getInt("Acrecodigo"));
                 cxp.setVenid(rs.getInt("Venid"));
                 cxp.setCppfechaemision(rs.getString("Cppfechaemision"));
-                cxp.setCppcmontototal(rs.getFloat("Cppmontotal"));
-                cxp.setCppsaldopendiente(rs.getFloat("Cppsaldopendiente"));
+                cxp.setCppmontototal(rs.getDouble("Cppmontototal"));
+                cxp.setCppsaldopendiente(rs.getDouble("Cppsaldopendiente"));
                 cxp.setCppestado(rs.getString("Cppestado").charAt(0));
                 cxp.setTTid(rs.getInt("TTid"));
                 cxp.setCpporigenid(rs.getInt("Cpporigenid"));
@@ -415,7 +424,7 @@ public class cuentasporpagarDAO {
     }
 
     // Query por saldo pendiente
-    public List<clscuentasporpagar> queryPorSaldo(float Cppsaldopendiente) {
+    public List<clscuentasporpagar> queryPorSaldo(double Cppsaldopendiente) {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -425,7 +434,7 @@ public class cuentasporpagarDAO {
         try {
             conn = Conexion.getConnection();
             stmt = conn.prepareStatement(SQL_QUERY_POR_SALDO);
-            stmt.setFloat(1, Cppsaldopendiente);
+            stmt.setDouble(1, Cppsaldopendiente);
             rs = stmt.executeQuery();
             while (rs.next()) {
                 cxp = new clscuentasporpagar();
@@ -434,8 +443,8 @@ public class cuentasporpagarDAO {
                 cxp.setAcrecodigo(rs.getInt("Acrecodigo"));
                 cxp.setVenid(rs.getInt("Venid"));
                 cxp.setCppfechaemision(rs.getString("Cppfechaemision"));
-                cxp.setCppcmontototal(rs.getFloat("Cppmontotal"));
-                cxp.setCppsaldopendiente(rs.getFloat("Cppsaldopendiente"));
+                cxp.setCppmontototal(rs.getDouble("Cppmontototal"));
+                cxp.setCppsaldopendiente(rs.getDouble("Cppsaldopendiente"));
                 cxp.setCppestado(rs.getString("Cppestado").charAt(0));
                 cxp.setTTid(rs.getInt("TTid"));
                 cxp.setCpporigenid(rs.getInt("Cpporigenid"));

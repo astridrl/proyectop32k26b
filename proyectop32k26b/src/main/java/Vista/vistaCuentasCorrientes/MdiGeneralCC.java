@@ -148,9 +148,19 @@ public class MdiGeneralCC extends javax.swing.JFrame {
         mnuGestionCobros.setText("Gestión de Cobros");
 
         jMenuItem3.setText("Generar Cuenta por Cobrar");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         mnuGestionCobros.add(jMenuItem3);
 
         jMenuItem5.setText("Registrar Cobro");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         mnuGestionCobros.add(jMenuItem5);
 
         mnuGeneral.add(mnuGestionCobros);
@@ -166,6 +176,11 @@ public class MdiGeneralCC extends javax.swing.JFrame {
         mnuGestionPagos.add(jMenuItem6);
 
         jMenuItem7.setText("Registrar Pago");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         mnuGestionPagos.add(jMenuItem7);
 
         mnuGeneral.add(mnuGestionPagos);
@@ -304,6 +319,27 @@ public class MdiGeneralCC extends javax.swing.JFrame {
         cuentasporpagar formulario = new cuentasporpagar();
         formulario.setVisible(true);
     }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Entrando a Gestion de Cuentas por Cobrar");
+
+        cuentasporpagar ventana = new cuentasporpagar();
+        ventana.setVisible(true);
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Entrando a Gestion de Cuentas por Cobrar");
+
+        FrmPagoEmision ventana = new FrmPagoEmision();
+        ventana.setVisible(true);
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     /**
      * @param args the command line arguments
