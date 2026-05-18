@@ -513,7 +513,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
             view.setVisible(true);
         } catch (Exception e){}
         
-    
+    ///prueba
     }//GEN-LAST:event_btnReportesActionPerformed
     
     private void txtCuentaBancariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCuentaBancariaActionPerformed
