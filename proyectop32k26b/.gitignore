@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Compiled class file
 *.class
 
@@ -26,3 +27,6 @@ replay_pid*
 # Maven
 target/
 *.lst
+=======
+target/
+>>>>>>> origin/CXPdulce
