@@ -18,9 +18,7 @@ import java.util.List;
  * @author astri
  */
 public class facturacompraAcreedorDAO {
-    // =========================================================
-    // SQL
-    // =========================================================
+    
     private static final String SQL_INSERT =
         "INSERT INTO facturascompras " +
         "(Faccomnumero, Faccomfecha, Procodigo, Faccomsubtotal, Faccomiva, Faccomtotal, Faccomestado, Acrecodigo) " +
@@ -67,9 +65,7 @@ public class facturacompraAcreedorDAO {
     private static final String SQL_DELETE =
         "DELETE FROM facturascompras WHERE Faccomid = ?";
  
-    // =========================================================
-    // INSERT
-    // =========================================================
+    //INSERT
     public int ingresaFacturaCompra(clsFacturaCompraAcreedor factura) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -108,9 +104,7 @@ public class facturacompraAcreedorDAO {
         return nuevoId;
     }
  
-    // =========================================================
-    // SELECT TODOS
-    // =========================================================
+    //SELECT
     public List<clsFacturaCompraAcreedor> consultaFacturasCompra() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -135,9 +129,7 @@ public class facturacompraAcreedorDAO {
         return lista;
     }
  
-    // =========================================================
     // SELECT POR ID
-    // =========================================================
     public clsFacturaCompraAcreedor consultaFacturaPorId(clsFacturaCompraAcreedor factura) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -162,9 +154,7 @@ public class facturacompraAcreedorDAO {
         return resultado;
     }
  
-    // =========================================================
-    // SELECT POR NÚMERO
-    // =========================================================
+    // SELECT POR NUM
     public clsFacturaCompraAcreedor consultaFacturaPorNumero(clsFacturaCompraAcreedor factura) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -189,9 +179,7 @@ public class facturacompraAcreedorDAO {
         return resultado;
     }
  
-    // =========================================================
     // SELECT POR ACREEDOR
-    // =========================================================
     public List<clsFacturaCompraAcreedor> consultaFacturasPorAcreedor(clsFacturaCompraAcreedor factura) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -217,9 +205,7 @@ public class facturacompraAcreedorDAO {
         return lista;
     }
  
-    // =========================================================
     // SELECT POR ESTADO
-    // =========================================================
     public List<clsFacturaCompraAcreedor> consultaFacturasPorEstado(clsFacturaCompraAcreedor factura) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -245,9 +231,7 @@ public class facturacompraAcreedorDAO {
         return lista;
     }
  
-    // =========================================================
     // UPDATE
-    // =========================================================
     public int actualizaFacturaCompra(clsFacturaCompraAcreedor factura) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -278,9 +262,8 @@ public class facturacompraAcreedorDAO {
         return rows;
     }
  
-    // =========================================================
     // ANULAR  (UPDATE estado → 'Anulada', conserva historial)
-    // =========================================================
+    
     public int anulaFacturaCompra(clsFacturaCompraAcreedor factura) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -304,9 +287,7 @@ public class facturacompraAcreedorDAO {
         return rows;
     }
  
-    // =========================================================
-    // DELETE físico
-    // =========================================================
+    // DELETE
     public int borraFacturaCompra(clsFacturaCompraAcreedor factura) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -329,9 +310,7 @@ public class facturacompraAcreedorDAO {
         }
         return rows;
     }
- // =========================================================
-    // HELPER PRIVADO
-    // =========================================================
+ // Mapeo (para menos codigo)
     private clsFacturaCompraAcreedor mapear(ResultSet rs) throws SQLException {
         int acreCodigo = rs.getInt("Acrecodigo");
 

@@ -19,9 +19,7 @@ import Modelo.modeloCuentasCorrientes.facturacompraAcreedorDAO;
  */
 public class clsFacturaCompraAcreedor {
  
-    // =========================================================
-    // ATRIBUTOS  (espejo exacto de facturascompras)
-    // =========================================================
+  
     private int            facComId;           // PK  AUTO_INCREMENT
     private String         facComNumero;       // UNIQUE – ingresado manualmente
     private String facComFecha;        // DEFAULT current_timestamp
@@ -154,7 +152,7 @@ public class clsFacturaCompraAcreedor {
         facturacompraAcreedorDAO dao = new facturacompraAcreedorDAO();
         return dao.anulaFacturaCompra(factura);
     }
-    // DELETE  (borra el registro de la BD)
+    // DELETE  
     public int setEliminarFacturaCompra(clsFacturaCompraAcreedor factura) {
         facturacompraAcreedorDAO dao = new facturacompraAcreedorDAO();
         return dao.borraFacturaCompra(factura);
