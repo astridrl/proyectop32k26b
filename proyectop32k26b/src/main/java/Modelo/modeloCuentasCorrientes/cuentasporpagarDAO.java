@@ -48,13 +48,10 @@ public class cuentasporpagarDAO {
                 int Acrecodigo       = rs.getInt("Acrecodigo");
                 int Venid            = rs.getInt("Venid");
                 String Cppfechaemision = rs.getString("Cppfechaemision");
-<<<<<<< HEAD
-                double Cppmontototal  = rs.getFloat("Cppmontotal");
-                double Cppsaldopendiente = rs.getFloat("Cppsaldopendiente");
-=======
+
                 double Cppmontototal  = rs.getDouble("Cppmontototal");
                 double Cppsaldopendiente = rs.getDouble("Cppsaldopendiente");
->>>>>>> origin/CXPdulce
+
                 char Cppestado       = rs.getString("Cppestado").charAt(0);
                 int TTid             = rs.getInt("TTid");
                 int Cpporigenid      = rs.getInt("Cpporigenid");
@@ -104,11 +101,9 @@ public class cuentasporpagarDAO {
                 stmt.setInt(2, cxp.getAcrecodigo());
             }
             stmt.setInt(3, cxp.getVenid());
-<<<<<<< HEAD
-            stmt.setDouble(4, cxp.getCppcmontototal());
-=======
+
             stmt.setDouble(4, cxp.getCppmontototal());
->>>>>>> origin/CXPdulce
+
             stmt.setDouble(5, cxp.getCppsaldopendiente());
             stmt.setString(6, String.valueOf(cxp.getCppestado()));
             stmt.setInt(7, cxp.getTTid());
@@ -139,11 +134,9 @@ public class cuentasporpagarDAO {
             stmt.setInt(2, cxp.getAcrecodigo());
             stmt.setInt(3, cxp.getVenid());
             stmt.setString(4, cxp.getCppfechaemision());
-<<<<<<< HEAD
-            stmt.setDouble(5, cxp.getCppcmontototal());
-=======
+
             stmt.setDouble(5, cxp.getCppmontototal());
->>>>>>> origin/CXPdulce
+
             stmt.setDouble(6, cxp.getCppsaldopendiente());
             stmt.setString(7, String.valueOf(cxp.getCppestado()));
             stmt.setInt(8, cxp.getTTid());
