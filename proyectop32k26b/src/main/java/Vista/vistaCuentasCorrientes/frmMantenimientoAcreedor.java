@@ -129,6 +129,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
         label7 = new javax.swing.JLabel();
         btnReportes = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        ayudas = new javax.swing.JButton();
 
         lb2.setText(".");
 
@@ -246,6 +247,13 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
 
         jLabel1.setText("Estatus: A = Activo     I = Inactivo\"");
 
+        ayudas.setText("Ayudas");
+        ayudas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ayudasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -273,18 +281,19 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
                                 .addGap(18, 18, 18)
                                 .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
                                         .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGap(51, 51, 51)
+                                    .addGroup(layout.createSequentialGroup()
                                         .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(btnReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(ayudas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addGap(2, 2, 2))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -340,7 +349,8 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnLimpiar)
-                            .addComponent(btnReportes))
+                            .addComponent(btnReportes)
+                            .addComponent(ayudas))
                         .addGap(31, 31, 31)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnBuscar)
@@ -497,9 +507,27 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
         
     }//GEN-LAST:event_txtCuentaBancariaActionPerformed
 
+    private void ayudasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ayudasActionPerformed
+        // TODO add your handling code here:
+    try {
+            if ((new File("src\\main\\java\\\\Ayudas\\CuentasCorrientes\\AyudasCuentasCorrientes.chm")).exists()) {
+                Process p = Runtime
+                .getRuntime()
+                .exec("rundll32 url.dll,FileProtocolHandler src\\main\\java\\Ayudas\\CuentasCorrientes\\AyudasCuentasCorrientes.chm"); 
+                p.waitFor();
+            } else {
+                System.out.println("La ayuda no Fue encontrada");
+            }
+            System.out.println("Correcto");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } 
+    }//GEN-LAST:event_ayudasActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Acreedores;
+    private javax.swing.JButton ayudas;
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;

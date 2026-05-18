@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="92d1d862-1814-4b56-948d-02b0934ba8c7">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT * FROM `facturascompras`]]>
+	</queryString>
+	<field name="Faccomid" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Faccomnumero" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Faccomfecha" class="java.time.LocalDateTime">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Faccomsubtotal" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Faccomiva" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Faccomtotal" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Faccomestado" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Acrecodigo" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Acreedor vinculado a esta factura]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="24" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="8b1fd325-04c4-4bb6-9ee3-9568f81f389f"/>
+				<text><![CDATA[Faccomid]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="120" y="0" width="100" height="20" uuid="44f64a8b-8127-495c-b5c3-3a928bab4773"/>
+				<text><![CDATA[Faccomnumero]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="240" y="0" width="100" height="20" uuid="a0b767f2-c45c-4ce3-b408-efbde385cec3"/>
+				<text><![CDATA[Faccomfecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="0" width="100" height="20" uuid="ff3024d0-3a2f-4a99-b4fb-c549a65d5a8d"/>
+				<text><![CDATA[Faccomsubtotal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="483" y="0" width="100" height="20" uuid="47cce6ca-29df-4a92-b764-1544c362e1e0"/>
+				<text><![CDATA[Faccomiva]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="583" y="0" width="100" height="20" uuid="2d5bbe92-3eea-4e5c-bd71-bef18810bc9d"/>
+				<text><![CDATA[Faccomtotal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="120" y="41" width="100" height="20" uuid="d48948d9-02f8-4de3-b36b-b1819f92cc39"/>
+				<text><![CDATA[Faccomestado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="240" y="41" width="100" height="20" uuid="732d53ac-1946-4a89-8c72-8c8cd691ed40"/>
+				<text><![CDATA[Acreedor vinculado a esta factura]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="17" width="100" height="20" uuid="dfb60ca2-d2cd-405a-b68d-31728212360d"/>
+				<textFieldExpression><![CDATA[$F{Faccomid}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="120" y="17" width="100" height="20" uuid="2af1cd21-4578-4d0a-a007-165a4eaf9ab5"/>
+				<textFieldExpression><![CDATA[$F{Faccomnumero}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="240" y="17" width="100" height="20" uuid="4e62f941-cd5b-46fb-a646-4a843135824e"/>
+				<textFieldExpression><![CDATA[""+$F{Faccomfecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="17" width="100" height="20" uuid="98946c91-d329-4bf8-9e3f-7492511d2603"/>
+				<textFieldExpression><![CDATA[$F{Faccomsubtotal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="483" y="17" width="100" height="20" uuid="7d3c7545-6ea9-4b1a-b0fb-c81992c0ec01"/>
+				<textFieldExpression><![CDATA[$F{Faccomiva}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="88" width="100" height="20" uuid="27e7a179-5c4a-45c6-aa1f-2fe8e425b621"/>
+				<textFieldExpression><![CDATA[$F{Faccomtotal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="120" y="88" width="100" height="20" uuid="a9d39a28-4733-488a-9fe0-aefead74a454"/>
+				<textFieldExpression><![CDATA[$F{Faccomestado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="240" y="88" width="100" height="20" uuid="0b956b04-03fe-453f-b8a1-030c1fc695db"/>
+				<textFieldExpression><![CDATA[$F{Acrecodigo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

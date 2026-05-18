@@ -8,14 +8,23 @@ import Controlador.clsUsuarioConectado;
 import Controlador.controladorCuentasCorrientes.clsAcreedor;
 import Controlador.controladorCuentasCorrientes.clsFacturaCompraAcreedor;
 import Modelo.BitacoraDAO;
+import java.io.File;
 import java.math.RoundingMode;
+import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import static java.util.FormatProcessor.FMT;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -93,8 +102,7 @@ public class FrmFacturaCompraAcreedor extends javax.swing.JInternalFrame {
         btsEliminar = new javax.swing.JButton();
         btsLimpiar = new javax.swing.JButton();
         btnReportes = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        ayudas = new javax.swing.JButton();
 
         jLabel1.setText("Datos de la factura:");
 
@@ -198,6 +206,13 @@ public class FrmFacturaCompraAcreedor extends javax.swing.JInternalFrame {
         });
 
         btnReportes.setText("Reportes");
+        btnReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportesActionPerformed(evt);
+            }
+        });
+
+        ayudas.setText("Ayuda");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -222,16 +237,12 @@ public class FrmFacturaCompraAcreedor extends javax.swing.JInternalFrame {
                                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(18, 18, 18)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGap(18, 18, 18)
-                                            .addComponent(cmbAcreedor, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(txtNumFactura, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(txtFecha, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(txtIdFactura, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addComponent(cmbAcreedor, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtNumFactura, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtFecha, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtIdFactura, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addGap(89, 89, 89)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -259,9 +270,12 @@ public class FrmFacturaCompraAcreedor extends javax.swing.JInternalFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 563, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(21, 21, 21))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btsEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btsLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(ayudas)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btsEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btsLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnReportes)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -329,7 +343,9 @@ public class FrmFacturaCompraAcreedor extends javax.swing.JInternalFrame {
                     .addComponent(btsEliminar)
                     .addComponent(btsLimpiar)
                     .addComponent(btnReportes))
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(ayudas)
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         pack();
@@ -686,6 +702,28 @@ private void cargarFacturaEnForm(clsFacturaCompraAcreedor f) {
         // TODO add your handling code here:
         limpiarTextos();
     }//GEN-LAST:event_btsLimpiarActionPerformed
+    private Connection connectio = null;
+    private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
+        // TODO add your handling code here:
+    Map p = new HashMap();
+        JasperReport report;
+        JasperPrint print; 
+        
+        try{
+            connectio = Modelo.Conexion.getConnection();
+            report = JasperCompileManager.compileReport(new File("").getAbsolutePath()
+            +"\\src\\main\\java\\Reportes.CuentasCorrientes\\pruebaReporteAcree.jrxml");
+            print = JasperFillManager.fillReport(report, p, connectio);
+            
+            JasperViewer view = new JasperViewer(print, false);
+            
+            view.setTitle("ReporteGeneralCobros");
+            view.setVisible(true);
+        } catch (Exception e){}
+        
+    
+    
+    }//GEN-LAST:event_btnReportesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -723,6 +761,7 @@ private void cargarFacturaEnForm(clsFacturaCompraAcreedor f) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ayudas;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnReportes;
     private javax.swing.JButton btsActualizar;
