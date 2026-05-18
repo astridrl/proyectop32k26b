@@ -54,8 +54,13 @@ public class clscuentasporpagar {
     public String getCppfechaemision() {return Cppfechaemision;}
     public void setCppfechaemision(String Cppfechaemision) {this.Cppfechaemision = Cppfechaemision;}
     
+<<<<<<< HEAD
     public double getCppcmontototal() {return Cppmontototal;}
     public void setCppcmontototal(double Cppcmontotal) {this.Cppmontototal = Cppmontototal;}
+=======
+    public double getCppmontototal() {return Cppmontototal;}
+    public void setCppmontototal(double Cppmontototal) {this.Cppmontototal = Cppmontototal;}
+>>>>>>> origin/CXPdulce
 
     public double getCppsaldopendiente() {return Cppsaldopendiente;}
     public void setCppsaldopendiente(double Cppsaldopendiente) {this.Cppsaldopendiente = Cppsaldopendiente;}
