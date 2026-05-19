@@ -28,7 +28,9 @@ public class cuentasporpagarDAO {
     private static final String SQL_QUERY_POR_FECHAS = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontototal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppfechaemision BETWEEN ? AND ?";
     private static final String SQL_QUERY_POR_MONTO = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontototal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppmontototal=?";
     private static final String SQL_QUERY_POR_SALDO = "SELECT Cppcodigo, Procodigo, Acrecodigo, Venid, Cppfechaemision, Cppmontototal, Cppsaldopendiente, Cppestado, TTid, Cpporigenid FROM cuentasporpagar WHERE Cppsaldopendiente=?";
-    
+    //Query para autocompletar campos por numero de factura
+    private static final String SQL_QUERY_POR_FACTURA = "SELECT Acrecodigo, Faccomtotal, Faccomestado FROM facturascompras WHERE Faccomnumero = ?";
+
     //SELECT trae todos los registros 
     
     public List<clscuentasporpagar> select(){
@@ -100,7 +102,11 @@ public class cuentasporpagarDAO {
             } else {
                 stmt.setInt(2, cxp.getAcrecodigo());
             }
-            stmt.setInt(3, cxp.getVenid());
+            if (cxp.getVenid() == 0) {
+                stmt.setNull(3, java.sql.Types.INTEGER);
+            } else {
+                stmt.setInt(3, cxp.getVenid());
+            }
 
             stmt.setDouble(4, cxp.getCppmontototal());
 
@@ -464,6 +470,32 @@ public class cuentasporpagarDAO {
             Conexion.close(conn);
         }
         return lista;
+    }
+    
+    //Query por factura acreedor
+        public clscuentasporpagar queryPorFactura(String faccomnumero) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        clscuentasporpagar cxp = new clscuentasporpagar();
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.prepareStatement(SQL_QUERY_POR_FACTURA);
+            stmt.setString(1, faccomnumero);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                cxp.setAcrecodigo(rs.getInt("Acrecodigo"));
+                cxp.setCppmontototal(rs.getDouble("Faccomtotal"));
+                cxp.setCppestado(rs.getString("Faccomestado").charAt(0));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            Conexion.close(rs);
+            Conexion.close(stmt);
+            Conexion.close(conn);
+        }
+        return cxp;
     }
 }
 

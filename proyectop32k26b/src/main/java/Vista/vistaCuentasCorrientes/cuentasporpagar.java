@@ -137,6 +137,12 @@ public class cuentasporpagar extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setText("No. Factura ");
 
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel6.setText("ID origen");
 
@@ -469,7 +475,7 @@ public class cuentasporpagar extends javax.swing.JFrame {
             cxp.setCppsaldopendiente(Double.parseDouble(jTextField7.getText().trim()));
             cxp.setCppestado(jTextField8.getText().trim().charAt(0));
             cxp.setTTid(Integer.parseInt(jTextField9.getText().trim()));
-            cxp.setVenid(Integer.parseInt(jTextField1.getText().trim()));
+            cxp.setVenid(0);
             cxp.setCpporigenid(Integer.parseInt(jTextField3.getText().trim()));
             cuentasporpagarDAO dao = new cuentasporpagarDAO();
             int resultado = dao.insert(cxp);
@@ -532,7 +538,8 @@ public class cuentasporpagar extends javax.swing.JFrame {
                     if (resultado.getCppcodigo() != 0) lista.add(resultado);
                     llenarTabla(lista);
                     break;
-
+                    
+                //Método para bloqueo de campos
                 case "Proveedor":
                     if (jTextField2.getText().trim().isEmpty()) {
                         JOptionPane.showMessageDialog(this,
@@ -727,6 +734,29 @@ public class cuentasporpagar extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_jTextField5KeyReleased
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+        String noFactura = jTextField1.getText().trim();
+        if (noFactura.isEmpty()) return;
+        try {
+            cuentasporpagarDAO dao = new cuentasporpagarDAO();
+            clscuentasporpagar resultado = dao.queryPorFactura(noFactura);
+
+            if (resultado.getAcrecodigo() != 0) {
+                jTextField5.setText(String.valueOf(resultado.getAcrecodigo())); // Acreedor ID
+                jTextField6.setText(String.valueOf(resultado.getCppmontototal())); // Monto total
+                jTextField8.setText(String.valueOf(resultado.getCppestado())); // Estado
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "No se encontró ninguna factura con ese número.",
+                    "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
      * @param args the command line arguments
