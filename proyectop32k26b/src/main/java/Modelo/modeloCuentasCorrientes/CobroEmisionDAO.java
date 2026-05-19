@@ -2,12 +2,18 @@
 //
 package Modelo.modeloCuentasCorrientes;
 
+import Controlador.Bancos.clsCuentaBancaria;
+import Controlador.Bancos.clsMovimientoBancario;
 import Controlador.controladorCuentasCorrientes.clsCobroEmision;
+import Controlador.controladorCuentasCorrientes.clsCuentasPorCobrar;
+import Modelo.Bancos.CuentaBancariaDAO;
+import Modelo.Bancos.MovimientoBancarioDAO;
 import Modelo.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +21,9 @@ import java.util.List;
 public class CobroEmisionDAO {
     private static final String SQL_SELECT = "SELECT Cobemid, Cpccodigo, Movbid, Cobfecha, Cobmonto, Cobtipo FROM cobrosemision";
     private static final String SQL_INSERT ="INSERT INTO cobrosemision(Cpccodigo, Movbid, Cobfecha, Cobmonto, Cobtipo) VALUES(?, ?, ?, ?, ?)";
-    private static final String SQL_UPDATE = "UPDATE cobrosemision SET Cpccodigo=?, Movbid=?, Cobfecha=?, Cobmonto=?, Cobtipo=? WHERE Cobemid = ?";
     private static final String SQL_DELETE = "DELETE FROM cobrosemision WHERE Cobemid=?";
     private static final String SQL_QUERY = "SELECT Cobemid, Cpccodigo, Movbid, Cobfecha, Cobmonto, Cobtipo FROM cobrosemision WHERE Cobemid = ?";
+ 
     
     public List<clsCobroEmision> select() {
         //Declaracion de variables
@@ -65,7 +71,7 @@ public class CobroEmisionDAO {
         }
         return cobros;
     }
-//Metodo para insertar valores en la base de datos en la tabla cobrosemision
+//Metodo para insertar valores en la base de datos en la tabla cobrosEmision
     public int insert(clsCobroEmision cobro) {
         //Declaracion de variables
         Connection conn = null;
@@ -97,41 +103,8 @@ public class CobroEmisionDAO {
         }
         return rows; //Retorna el numero de registros afectados
     }
-    
-//Metodo para actualizar los valores en la base de datos en la tabla cuentasporcobrar    
-    public int update(clsCobroEmision cobro) {
-        //Declaracion de variables
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        int rows = 0;
-
-        try {
-            //Conexion con la base de datos
-            conn = Modelo.Conexion.getConnection();
-            //Mensaque de la accion realizada en consola
-            System.out.println("Ejecutando query: " + SQL_UPDATE);           
-            stmt = conn.prepareStatement(SQL_UPDATE);
-            
-            //Asignacion de valores en los parametros
-            stmt.setInt(1, cobro.getCodigoCPC());
-            stmt.setInt(2, cobro.getIdMOVB());
-            stmt.setString(3, cobro.getFechaCOB());
-            stmt.setDouble(4, cobro.getMontoCOB());
-            stmt.setString(5, cobro.getTipoCOB());
-            //Codigo de la cobro que se actualizara
-            stmt.setInt(6, cobro.getIdCOBEM());
-
-            rows = stmt.executeUpdate();
-            System.out.println("Registros actualizados: " + rows);    
-        } catch (SQLException ex) {
-            ex.printStackTrace(System.out);
-        } finally {
-            Modelo.Conexion.close(stmt);
-            Modelo.Conexion.close(conn);
-        }
-        return rows; //Retorna el numero de registros afectados
-    }   
- //Metodo para eliminar valores en la base de datos en la tabla cuentasporcobrar    
+     
+ //Metodo para eliminar valores en la base de datos en la tabla cobrosEmision    
     public int delete(clsCobroEmision cobro){
         //Declaracion de variables
         Connection conn = null;
@@ -161,7 +134,7 @@ public class CobroEmisionDAO {
         }
         return rows; //Retorna el numero de registros afectados
     }
- //Metodo query para los valores en la base de datos en la tabla cuentasporcobrar   
+ //Metodo query para los valores en la base de datos en la tabla cobrosEmision   
     public clsCobroEmision query(clsCobroEmision cobro) {
         //Definicion de variables
         Connection conn = null;
@@ -206,6 +179,161 @@ public class CobroEmisionDAO {
         }
         return cobro;//Retorns el objeto encontrado
     }
-        
+     
+    private int buscarCuentaBancariaPorCliente(int cliid) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = Modelo.Conexion.getConnection();
+            String sql = "SELECT CBANid FROM CuentaBancaria WHERE Cliid = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, cliid);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("CBANid");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            Modelo.Conexion.close(rs);
+            Modelo.Conexion.close(stmt);
+            Modelo.Conexion.close(conn);
+        }
+        return 0;
+    }
     
+    private int obtenerUltimoMovimientoPorCuenta(int cbanId) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = Conexion.getConnection();
+            String sql = "SELECT MAX(Movbid) as UltimoId FROM MovimientoBancario WHERE CBANid = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, cbanId);
+            rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt("UltimoId");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.out);
+        } finally {
+            Conexion.close(rs);
+            Conexion.close(stmt);
+            Conexion.close(conn);
+        }
+        return 0;
+    }
+    
+    
+    public int registrarCobro(int codigoCPC, double montoCobro, String fechaCobro,String tipoCobro) {
+        //Variables        
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        ResultSet rsGenerated = null;
+        
+        try {
+            conn = Modelo.Conexion.getConnection();
+            //Buscar Cuenta por cobrar
+            cuentasPorCobrarDAO daoCPC = new cuentasPorCobrarDAO();
+            clsCuentasPorCobrar cuentaBuscar = new clsCuentasPorCobrar();
+            cuentaBuscar.setCodigoCPC(codigoCPC);
+        
+            clsCuentasPorCobrar cuenta = daoCPC.query(cuentaBuscar);
+        
+            if (cuenta == null) {
+                System.out.println("Cuenta por cobrar no encontrada: " + codigoCPC);
+                return 0;
+            }
+
+            double saldoActual = cuenta.getSaldoCPC();
+
+            if (montoCobro > saldoActual) {
+                System.out.println("Monto excede saldo pendiente");
+                return 0;
+            }
+                     
+            //Buscar Cuenta Bancaria del cliente
+            String sqlCuentaBanco = "SELECT CBANid FROM cuentabancaria WHERE Cliid = ?";
+            stmt = conn.prepareStatement(sqlCuentaBanco);
+            stmt.setInt(1, cuenta.getIdCLI());
+            rs = stmt.executeQuery();
+
+            if (!rs.next()) {
+                System.out.println("Cliente sin cuenta bancaria - Cliid: " + cuenta.getIdCLI());
+                return 0;
+            }
+
+            int cbanId = rs.getInt("CBANid");
+            System.out.println("Cuenta bancaria encontrada - CBANid: " + cbanId);
+           
+            
+            //Registrar Movimiento Bancario
+            String sqlInsertMov = "INSERT INTO movimientobancario (Movbfechamovimiento,	Movbmonto, Movdescripcion, "
+                    + "	CBANid, TTid , Movbtipomov, Movbreferencia, Movbconciliado) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?)";
+                        
+            stmt = conn.prepareStatement(sqlInsertMov, Statement.RETURN_GENERATED_KEYS);
+            stmt.setDouble(1, montoCobro);
+            stmt.setString(2, "Cobro CPC " + codigoCPC);
+            stmt.setInt(3, cbanId);
+            stmt.setInt(4, 5);  // TTid = Cobro
+            stmt.setString(5, "Credito");
+            stmt.setString(6, "COBRO-CPC-" + codigoCPC);
+            stmt.setString(7, "N");
+        
+            if (stmt.executeUpdate() <= 0) {
+              System.out.println("Error al insertar movimiento bancario");
+              return 0;
+            }     
+            // Obtener ID del movimiento generado
+            int movId = 0;
+            rsGenerated = stmt.getGeneratedKeys();
+            if (rsGenerated.next()) {
+                movId = rsGenerated.getInt(1);
+            }
+            System.out.println("Movimiento bancario registrado - ID: " + movId);
+            
+            //Registro del cobro 
+            clsCobroEmision cobro = new clsCobroEmision();
+            cobro.setCodigoCPC(codigoCPC);
+            cobro.setIdMOVB(movId);
+            cobro.setFechaCOB(fechaCobro);
+            cobro.setMontoCOB(montoCobro);
+            cobro.setTipoCOB(tipoCobro);
+            int resultadoCobro = insert(cobro);
+
+            if (resultadoCobro <= 0) {
+                System.out.println("Error al insertar cobro emision");
+                return 0;
+            }
+            
+            //Actualizar saldo              
+            cuenta.setSaldoCPC(montoCobro);
+            daoCPC.actualizarSaldo(cuenta);
+            
+            double nuevoSaldo = saldoActual - montoCobro;
+            //Actualizar estado
+            if (nuevoSaldo <= 0.01) {
+                cuenta.setEstadoCPC("Pagada");
+                daoCPC.updateEstado(cuenta);
+            }
+            System.out.println("Cobro registrado exitosamente");
+            return 1;
+       
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+            return 0;
+        } finally{    
+            Modelo.Conexion.close(rsGenerated);
+            Modelo.Conexion.close(rs);   
+            Modelo.Conexion.close(stmt); 
+            Modelo.Conexion.close(conn);
+        }
+    }
 }
