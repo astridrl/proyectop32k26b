@@ -56,59 +56,75 @@ public class TransaccionesCC extends javax.swing.JFrame {
      */
     public TransaccionesCC() {
         initComponents(); 
-    
-    // 2. Propiedades de visualización de la ventana
-    setLocationRelativeTo(null);
-    this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-    this.setTitle("SIG - Gestión de Recibos y Cuentas Corrientes");
-    
-    // 3. Configuración del ComboBox de Tipo de Recibo
-    if (cmbTipoRecibo != null) {
-        cmbTipoRecibo.removeAllItems(); 
-        cmbTipoRecibo.addItem("RECIBO DE INGRESOS / COBRO");
-        cmbTipoRecibo.addItem("NOTA DE CRÉDITO CLIENTE");
-        cmbTipoRecibo.addItem("ANTICIPO DE CLIENTE");
-        cmbTipoRecibo.setSelectedIndex(0); 
-    }
-    
-    // 4. Listeners para controlar exclusión mutua de Clientes y Proveedores
-    jcbClientes.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            if (jcbClientes.getSelectedItem() != null && !jcbClientes.getSelectedItem().toString().trim().isEmpty() && jcbClientes.getSelectedIndex() > 0) {
-                jcbProveedores.setSelectedIndex(0); // Resetea proveedor
-                jcbProveedores.setEnabled(false);   // Bloquea proveedor
-            } else if (jcbClientes.getSelectedIndex() == 0) {
-                jcbProveedores.setEnabled(true);    // Libera si vuelve al estado por defecto
-            }
-        }
-    });
+        
+        // 1. Propiedades de visualización de la ventana
+        setLocationRelativeTo(null);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        this.setTitle("SIG - Gestión de Recibos y Cuentas Corrientes");
 
-    jcbProveedores.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            if (jcbProveedores.getSelectedItem() != null && !jcbProveedores.getSelectedItem().toString().trim().isEmpty() && jcbProveedores.getSelectedIndex() > 0) {
-                jcbClientes.setSelectedIndex(0); // Resetea cliente
-                jcbClientes.setEnabled(false);   // Bloquea cliente
-            } else if (jcbProveedores.getSelectedIndex() == 0) {
-                jcbClientes.setEnabled(true);    // Libera si vuelve al estado por defecto
+        // 2. Listeners para controlar exclusión mutua de Clientes y Proveedores
+        jcbClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (jcbClientes.getSelectedItem() != null && !jcbClientes.getSelectedItem().toString().trim().isEmpty() && jcbClientes.getSelectedIndex() > 0) {
+                    jcbProveedores.setSelectedIndex(0); // Resetea proveedor
+                    jcbProveedores.setEnabled(false);   // Bloquea proveedor
+                } else if (jcbClientes.getSelectedIndex() == 0) {
+                    jcbProveedores.setEnabled(true);    // Libera si vuelve al estado por defecto
+                }
             }
-        }
-    });
+        });
 
-    jrbProveedor.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            jrbProveedorActionPerformed(evt);
+        jcbProveedores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (jcbProveedores.getSelectedItem() != null && !jcbProveedores.getSelectedItem().toString().trim().isEmpty() && jcbProveedores.getSelectedIndex() > 0) {
+                    jcbClientes.setSelectedIndex(0); // Resetea cliente
+                    jcbClientes.setEnabled(false);   // Bloquea cliente
+                } else if (jcbProveedores.getSelectedIndex() == 0) {
+                    jcbClientes.setEnabled(true);    // Libera si vuelve al estado por defecto
+                }
+            }
+        });
+
+        jrbProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jrbProveedorActionPerformed(evt);
+            }
+        });
+        
+        // 3. Inicialización estructurada de los Modelos de Tablas (Aquí se configuran los Listeners correctos una sola vez)
+        inicializarEstadoCuenta();
+        inicializarMovimientos(); 
+        inicializarTablasRecibos(); // El método que reparamos anteriormente se encarga de crear todo limpio
+        
+        // 4. Carga de información de bases de datos y componentes externos
+        configurarComponentesAdicionalesRecibo(); 
+        cargarComboClientes(); 
+        cargarComboProveedores();
+        
+        // Configuración de ComboBoxes de tipos de recibos
+        if (cmbTipoRecibo != null) {
+            cmbTipoRecibo.setEnabled(true); 
+            cmbTipoRecibo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+                "RECIBO DE INGRESOS / COBRO",
+                "NOTA DE CRÉDITO CLIENTE",
+                "ANTICIPO DE CLIENTE"
+            }));
+            cmbTipoRecibo.setSelectedIndex(0);
+            cmbTipoRecibo.revalidate();
+            cmbTipoRecibo.repaint();
         }
-    });
-    
-    // 5. Inicialización de los Modelos de Tablas y carga de Bases de Datos
-    inicializarEstadoCuenta();
-    inicializarMovimientos(); 
-    inicializarTablasRecibos(); 
-    
-    // 6. Carga de información externa
-    configurarComponentesAdicionalesRecibo(); 
-    cargarComboClientes(); // Asegúrate de map
-    cargarComboProveedores();
+        
+        if (cmbTipoRecibo1 != null) {
+            cmbTipoRecibo1.setEnabled(true); 
+            cmbTipoRecibo1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+                "RECIBO DE INGRESOS / COBRO",
+                "NOTA DE CRÉDITO CLIENTE",
+                "ANTICIPO DE CLIENTE"
+            }));
+            cmbTipoRecibo1.setSelectedIndex(0);
+            cmbTipoRecibo1.revalidate();
+            cmbTipoRecibo1.repaint();
+        }
         
     }
 
@@ -149,58 +165,62 @@ public class TransaccionesCC extends javax.swing.JFrame {
     private void buscarClienteYFacturas(String idClienteStr) {
     // Limpiamos la tabla superior de pendientes antes de la nueva carga
         modeloPendientes.setRowCount(0);
-
     Connection con = null;
+    
     try {
-        con = cp.getConnection(); 
+        con = cp.getConnection();
+        int cliid = Integer.parseInt(idClienteStr);
 
-        // 2. Buscar el nombre del cliente en la tabla clientes (Cliid y Clinombre)
+        // Buscar nombre del cliente
         String sqlCliente = "SELECT Clinombre FROM clientes WHERE Cliid = ?";
         try (PreparedStatement psCli = con.prepareStatement(sqlCliente)) {
-            psCli.setInt(1, Integer.parseInt(idClienteStr));
+            psCli.setInt(1, cliid);
             try (ResultSet rsCli = psCli.executeQuery()) {
                 if (rsCli.next()) {
                     txtIdCliente.setText(idClienteStr);
                     txtNombreCliente.setText(rsCli.getString("Clinombre"));
                 } else {
-                    JOptionPane.showMessageDialog(this, "El código de cliente no existe.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this,
+                        "El código de cliente no existe.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
         }
 
-        // 3. QUERY AJUSTADO AL DESCRIBE REAL: Usamos los campos idénticos que mostró tu comando
-        String sqlFacturas = "SELECT Cpccodigo, Cppnumero, Cppsaldopendiente, Cppfechaemision " +
+        // ✔ Columnas reales de cuentasporcobrar
+        String sqlFacturas = "SELECT Cpccodigo, Cpcfecha, Cpcsaldo, Cpcmonto " +
                              "FROM cuentasporcobrar " +
-                             "WHERE Procodigo = ? AND Cppsaldopendiente > 0 AND Cppestado = 'A'";
+                             "WHERE Cliid = ? AND Cpcsaldo > 0 AND Cpcestado = 'P'";
 
         try (PreparedStatement psFac = con.prepareStatement(sqlFacturas)) {
-            psFac.setInt(1, Integer.parseInt(idClienteStr));
-            
+            psFac.setInt(1, cliid);
             try (ResultSet rsFac = psFac.executeQuery()) {
                 while (rsFac.next()) {
-                    // Llenamos el JTable extrayendo los campos exactos de tu base de datos
                     modeloPendientes.addRow(new Object[]{
-                        rsFac.getInt("Cpccodigo"),           // Columna 0: ID Único del documento
-                        rsFac.getString("Cppnumero"),        // Columna 1: Número de factura
-                        rsFac.getDouble("Cppsaldopendiente"), // Columna 2: Saldo Pendiente
-                        rsFac.getDate("Cppfechaemision")     // Columna 3: Fecha de emisión
+                        rsFac.getInt("Cpccodigo"),       // ID único
+                        "CPC-" + rsFac.getInt("Cpccodigo"), // número descriptivo
+                        rsFac.getDate("Cpcfecha"),        // fecha emisión
+                        rsFac.getDouble("Cpcsaldo")       // saldo pendiente
                     });
                 }
             }
         }
 
         if (modeloPendientes.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "El cliente no registra facturas pendientes de cobro.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                "El cliente no registra facturas pendientes de cobro.",
+                "Información", JOptionPane.INFORMATION_MESSAGE);
         }
 
     } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "El código de cliente debe ser un número entero.", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this,
+            "El código de cliente debe ser un número.", "Error",
+            JOptionPane.ERROR_MESSAGE);
     } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Error de estructura SQL en Base de Datos:\n" + e.getMessage(), "Error SQL", JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error general: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this,
+            "Error SQL: " + e.getMessage(), "Error SQL",
+            JOptionPane.ERROR_MESSAGE);
         e.printStackTrace();
     } finally {
         if (con != null) {
@@ -448,34 +468,29 @@ public class TransaccionesCC extends javax.swing.JFrame {
         jcbCliente.removeAllItems();
         jcbClientes.removeAllItems();
 
-        // 2. Agregamos el ítem por defecto
         jcbCliente.addItem("0 - Seleccione Cliente");
         jcbClientes.addItem("0 - Seleccione Cliente");
 
         try {
-            
-            
-            java.util.Collection<?> listaGenerica = (java.util.Collection<?>) clientesDAO.listar();
+            java.util.Collection<?> listaGenerica = 
+                (java.util.Collection<?>) clientesDAO.listar();
 
             if (listaGenerica != null) {
                 for (Object obj : listaGenerica) {
+                    Controlador.Bancos.clsCliente c = 
+                        (Controlador.Bancos.clsCliente) obj;
 
-                    // Forzamos la conversión manual al modelo del otro módulo elemento por elemento
-                    Controlador.Bancos.clsCliente c = (Controlador.Bancos.clsCliente) obj;
-
-                    // Extraemos las propiedades usando la estructura exacta de su clase
+                    // ✔ getCliid() no getClid()
                     String itemFormateado = c.getClid() + " - " + c.getClinombre();
 
-                    // Llenamos los ComboBoxes
-                    jcbCliente.addItem(itemFormateado);   // Pestaña Estado de Cuenta
-                    jcbClientes.addItem(itemFormateado);  // Pestaña Movimientos
+                    jcbCliente.addItem(itemFormateado);
+                    jcbClientes.addItem(itemFormateado);
                 }
             }
         } catch (Exception e) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Error al enlazar los datos del módulo de Bancos:\n" + e.getMessage(), 
-                "Error de Carga", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                "Error al cargar clientes:\n" + e.getMessage(),
+                "Error de Carga", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
@@ -483,26 +498,28 @@ public class TransaccionesCC extends javax.swing.JFrame {
     private void cargarComboProveedores() {
     // 1. Limpiamos el combo de proveedores para que no acumule datos
     jcbProveedor.removeAllItems();
+    jcbProveedores.removeAllItems();  // ✔ también el plural
+
     jcbProveedor.addItem("0 - Seleccione Proveedor");
-    
+    jcbProveedores.addItem("0 - Seleccione Proveedor");  // ✔
+
     try {
-        // Llamamos al método de Jennifer
-        java.util.List<Controlador.Compras.clsProveedor> listaProveedores = proveedorDAO.consultaProveedores();
-        
+        java.util.List<Controlador.Compras.clsProveedor> listaProveedores = 
+            proveedorDAO.consultaProveedores();
+
         if (listaProveedores != null && !listaProveedores.isEmpty()) {
             for (Controlador.Compras.clsProveedor prov : listaProveedores) {
                 String itemFormateado = prov.getProcodigo() + " - " + prov.getPronombre();
                 jcbProveedor.addItem(itemFormateado);
+                jcbProveedores.addItem(itemFormateado);  // ✔
             }
         } else {
-            System.out.println("Nota: La tabla proveedores está vacía en la base de datos.");
+            System.out.println("Tabla proveedores vacía.");
         }
     } catch (Exception e) {
-        // Si hay un error de conexión, este mensaje te dirá exactamente qué pasó en lugar de quedarse callado
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "Error real al cargar Proveedores: " + e.getMessage(), 
-            "Error de Conexión", 
-            javax.swing.JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this,
+            "Error al cargar Proveedores: " + e.getMessage(),
+            "Error de Conexión", JOptionPane.ERROR_MESSAGE);
         e.printStackTrace();
     }
 }
@@ -632,6 +649,7 @@ public class TransaccionesCC extends javax.swing.JFrame {
         txtTotalPagado1 = new javax.swing.JTextField();
         btnProcesarReciboCliente = new javax.swing.JButton();
         btnAyudaRecibosClientes = new javax.swing.JButton();
+        generarReporteRecibosClientes = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -750,7 +768,7 @@ public class TransaccionesCC extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(lblSaldoActual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(176, Short.MAX_VALUE))
+                .addContainerGap(177, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Estado de Cuenta", jPanel3);
@@ -1250,6 +1268,13 @@ public class TransaccionesCC extends javax.swing.JFrame {
             }
         });
 
+        generarReporteRecibosClientes.setText("Generar Reportes");
+        generarReporteRecibosClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generarReporteRecibosClientesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -1266,10 +1291,13 @@ public class TransaccionesCC extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(txtTotalPagado1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnProcesarReciboCliente)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEliminar1)
-                .addGap(205, 205, 205))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(btnProcesarReciboCliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnEliminar1))
+                    .addComponent(generarReporteRecibosClientes))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1377,8 +1405,9 @@ public class TransaccionesCC extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel30)
-                    .addComponent(txtTotalPagado1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtTotalPagado1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(generarReporteRecibosClientes))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Recibos de Cientes", jPanel4);
@@ -1561,26 +1590,37 @@ public class TransaccionesCC extends javax.swing.JFrame {
 
     
     private void configurarComponentesAdicionalesRecibo() {
-        cmbTipoRecibo.removeAllItems();
-        cmbTipoRecibo.addItem("RECIBO DE PAGO");
-        cmbTipoRecibo.addItem("NOTA DE CRÉDITO");
-        cmbTipoRecibo.addItem("AJUSTE DE CUENTA");
-        
-        // Inicializar por defecto el seleccionador de fecha con la fecha de hoy
-        if (dcFecha.getDate() == null) {
-            dcFecha.setDate(new java.util.Date());
-        }
+        if (tblFacturasPendientes1 != null) {
+        String[] cols = {"ID Doc", "No. Factura", "Fecha Emisión", "Saldo Pendiente"};
+        DefaultTableModel modelo = new DefaultTableModel(cols, 0) {
+            public boolean isCellEditable(int r, int c) { return false; }
+        };
+        tblFacturasPendientes1.setModel(modelo);
+    }
 
-        // ESCUCHADOR DE LA TABLA INFERIOR:
-        // Cada vez que el usuario termine de escribir un monto abonado, se recalculan los totales automáticamente
-        modeloAsignadas.addTableModelListener(e -> {
-            if (e.getType() == javax.swing.event.TableModelEvent.UPDATE && e.getColumn() == 3) {
-                // Evitamos bucles infinitos en el evento desvinculando temporalmente el cálculo o validando
-                javax.swing.SwingUtilities.invokeLater(() -> {
-                    calcularTotalesRecibo();
-                });
+    // Tabla tblFacturasAsignadas1 (tab Recibos Clientes)
+    if (tblFacturasAsignadas1 != null) {
+        String[] cols = {"ID Doc", "No. Factura", "Saldo Anterior", 
+                         "Monto Abonado", "Saldo Actualizado"};
+        DefaultTableModel modelo = new DefaultTableModel(cols, 0) {
+            public boolean isCellEditable(int r, int c) { return c == 3; }
+        };
+        tblFacturasAsignadas1.setModel(modelo);
+    }
+
+    // Tabla tblAplicacion1 (formas de pago de Recibos Clientes)
+    if (tblAplicacion1 != null) {
+        String[] cols = {"Código", "Descripción", "Valor", "No. Doc/Ref", "Banco"};
+        DefaultTableModel modelo = new DefaultTableModel(cols, 0) {
+            public boolean isCellEditable(int r, int c) { 
+                return c == 2 || c == 3 || c == 4; 
             }
-        });
+        };
+        tblAplicacion1.setModel(modelo);
+        modelo.addRow(new Object[]{"EF", "EFECTIVO",              0.00, "N/A", "N/A"});
+        modelo.addRow(new Object[]{"CH", "CHEQUE",                0.00, "",    ""   });
+        modelo.addRow(new Object[]{"TR", "TRANSFERENCIA BANCARIA", 0.00, "",    ""   });
+    }
     }
     
     
@@ -1997,7 +2037,7 @@ public class TransaccionesCC extends javax.swing.JFrame {
             try {
                 conn = Conexion.getConnection();
                 report = JasperCompileManager.compileReport(new File("").getAbsolutePath()
-                    + "/src/main/java/Reportes/CuentasCorrientes/MovimientosTransaccionesReportes.jrxml");
+                    + "/src/main/java/Reportes/CuentasCorrientes/rptRecibosProveedores.jrxml");
                     print = JasperFillManager.fillReport(report, p, conn);
                 JasperViewer view = new JasperViewer(print, false);
                     view.setTitle("Reporte Prueba");
@@ -2016,7 +2056,7 @@ public class TransaccionesCC extends javax.swing.JFrame {
             try {
                 conn = Conexion.getConnection();
                 report = JasperCompileManager.compileReport(new File("").getAbsolutePath()
-                    + "/src/main/java/Reportes/CuentasCorrientes/reporteMovimientosCC.jrxml");
+                    + "/src/main/java/Reportes/CuentasCorrientes/MovimientosTransaccionesReportes.jrxml");
                     print = JasperFillManager.fillReport(report, p, conn);
                 JasperViewer view = new JasperViewer(print, false);
                     view.setTitle("Reporte Prueba");
@@ -2168,6 +2208,25 @@ public class TransaccionesCC extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_btnAyudaRecibosProveedoresActionPerformed
 
+    private void generarReporteRecibosClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generarReporteRecibosClientesActionPerformed
+        // TODO add your handling code here:
+        Connection conn = null;
+        Map p = new HashMap();
+        JasperReport report;
+        JasperPrint print;
+            try {
+                conn = Conexion.getConnection();
+                report = JasperCompileManager.compileReport(new File("").getAbsolutePath()
+                    + "/src/main/java/Reportes/CuentasCorrientes/rptRecibosClientes.jrxml");
+                    print = JasperFillManager.fillReport(report, p, conn);
+                JasperViewer view = new JasperViewer(print, false);
+                    view.setTitle("Reporte Prueba");
+                view.setVisible(true);
+            } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_generarReporteRecibosClientesActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -2228,6 +2287,7 @@ public class TransaccionesCC extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser dcFecha;
     private com.toedter.calendar.JDateChooser dcFecha1;
     private javax.swing.JButton generarReporteCuentasPorPagar;
+    private javax.swing.JButton generarReporteRecibosClientes;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
