@@ -213,6 +213,11 @@ public class FrmFacturaCompraAcreedor extends javax.swing.JInternalFrame {
         });
 
         ayudas.setText("Ayuda");
+        ayudas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ayudasActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -724,6 +729,11 @@ private void cargarFacturaEnForm(clsFacturaCompraAcreedor f) {
     
     
     }//GEN-LAST:event_btnReportesActionPerformed
+
+    private void ayudasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ayudasActionPerformed
+        // TODO add your handling code here:
+    
+    }//GEN-LAST:event_ayudasActionPerformed
 
     /**
      * @param args the command line arguments

@@ -4,10 +4,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
+ 
+ 
 package Vista.vistaCuentasCorrientes;
-
+ 
 import Controlador.clsSeguridad; 
 import Controlador.clsBitacora;
 import Controlador.clsUsuarioConectado;
@@ -29,8 +29,8 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.view.JasperViewer;
-
-
+ 
+ 
 /**
  *
  * @author visitante
@@ -39,7 +39,7 @@ public class frmMantenimientoAcreedor extends javax.swing.JInternalFrame {
     
 int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a llamar del clsUsuarioConectado
     
-
+ 
     public void llenadoDeCombos() {
         /*EmpleadoDAO empleadoDAO = new EmpleadoDAO();
         List<Empleado> empleados = empleadoDAO.select();
@@ -48,7 +48,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
             cbox_empleado.addItem(empleados.get(i).getNombreEmpleado());
         } */
     }
-
+ 
     public void llenadoDeTablas() {
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("ID");
@@ -72,7 +72,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
 }  
               
     
-
+ 
     public frmMantenimientoAcreedor() {
         initComponents();
         llenadoDeTablas();
@@ -85,7 +85,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
    public void cargarPermisos() {
     //int usuId = clsUsuarioConectado.getUsuId();
    // PermisosDAO permisosDAO = new PermisosDAO();
-
+ 
     //METODO PARA EL SISTEMA DE SEGURIDAD DE PERMISOS AGREGAR A SUS FORMULARIOS CORRESPONDIENTES
     // Todos usan código 4020 = Mantenimiento Acreedor
     //btnRegistrar.setEnabled( permisosDAO.puedeInsertar (usuId, 4020) );
@@ -94,8 +94,8 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
     //btnEliminar.setEnabled ( permisosDAO.puedeEliminar (usuId, 4022) );
     //btnReportes.setEnabled( permisosDAO.puedeReportar (usuId, 4024) );
 }
-
-
+ 
+ 
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -104,7 +104,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+ 
         lb2 = new javax.swing.JLabel();
         lbusu = new javax.swing.JLabel();
         btnEliminar = new javax.swing.JButton();
@@ -129,69 +129,66 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
         label7 = new javax.swing.JLabel();
         btnReportes = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-<<<<<<< HEAD
+ 
         ayudas = new javax.swing.JButton();
-=======
-        jButton1 = new javax.swing.JButton();
->>>>>>> FinalizacionAcreedoresAstrid
-
+ 
         lb2.setText(".");
-
+ 
         setClosable(true);
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
         setTitle("Mantenimiento Acreedores");
         setVisible(true);
-
+ 
         btnEliminar.setText("Eliminar");
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarActionPerformed(evt);
             }
         });
-
+ 
         btnRegistrar.setText("Registrar");
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRegistrarActionPerformed(evt);
             }
         });
-
+ 
         btnBuscar.setText("Buscar");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarActionPerformed(evt);
             }
         });
-
+ 
         Acreedores.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         Acreedores.setText("Acreedores: ");
-
+ 
         btnModificar.setText("Modificar");
         btnModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnModificarActionPerformed(evt);
             }
         });
-
+ 
         label3.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         label3.setText("Nombre");
-
+ 
         txtNombre.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         txtNombre.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
-
+ 
         btnLimpiar.setText("Limpiar");
         btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLimpiarActionPerformed(evt);
             }
         });
-
+ 
         tablaAcreedores.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         tablaAcreedores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+ 
             },
             new String [] {
                 "ID Acreedor", "Nombre", "Nit", "Cuenta Bancaria", "Estado"
@@ -200,37 +197,37 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
             boolean[] canEdit = new boolean [] {
                 false, true, true, true, true
             };
-
+ 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         jScrollPane1.setViewportView(tablaAcreedores);
-
+ 
         txtNit.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         txtNit.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
-
+ 
         label5.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         label5.setText("Nit");
-
+ 
         lb.setText(".");
-
+ 
         label4.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         label4.setText("ID a buscar");
-
+ 
         btnActualizar.setText("Actualizar");
         btnActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnActualizarActionPerformed(evt);
             }
         });
-
+ 
         txtEstado.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         txtEstado.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
-
+ 
         label6.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         label6.setText("Estado");
-
+ 
         txtCuentaBancaria.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         txtCuentaBancaria.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         txtCuentaBancaria.addActionListener(new java.awt.event.ActionListener() {
@@ -238,30 +235,26 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
                 txtCuentaBancariaActionPerformed(evt);
             }
         });
-
+ 
         label7.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         label7.setText("Cuenta Bancaria");
-
+ 
         btnReportes.setText("Reportes");
         btnReportes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnReportesActionPerformed(evt);
             }
         });
-
+ 
         jLabel1.setText("Estatus: A = Activo     I = Inactivo\"");
-
-<<<<<<< HEAD
+ 
         ayudas.setText("Ayudas");
         ayudas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ayudasActionPerformed(evt);
             }
         });
-=======
-        jButton1.setText("Ayudas");
->>>>>>> FinalizacionAcreedoresAstrid
-
+ 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -324,8 +317,6 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnActualizar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
                         .addGap(77, 77, 77))))
         );
         layout.setVerticalGroup(
@@ -371,17 +362,15 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnActualizar)
-                            .addComponent(jButton1))
+                        .addComponent(btnActualizar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)
                         .addContainerGap(27, Short.MAX_VALUE))))
         );
-
+ 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+ 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         // TODO add your handling code here:
         clsAcreedor acreedor = new clsAcreedor();
@@ -395,7 +384,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
         bitacoradao.insert(idUsuario, codigoAplicacion, "Eliminar Acreedor");
     llenadoDeTablas();
     limpiarTextos();
-
+ 
     }//GEN-LAST:event_btnEliminarActionPerformed
     int contador=0; 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
@@ -404,7 +393,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
     acreedor.setAcreNit(txtNit.getText());
     acreedor.setAcreCuentaBancaria(txtCuentaBancaria.getText());
     acreedor.setAcreEstado(txtEstado.getText());
-
+ 
     acreedor.setIngresarAcreedor(acreedor);
     JOptionPane.showMessageDialog(null, "Registro Ingresado\n",
             "Información del Sistema", JOptionPane.INFORMATION_MESSAGE);
@@ -414,9 +403,9 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
         bitacoradao.insert(idUsuario, codigoAplicacion, "Insertar Acreedor");
     llenadoDeTablas();
     limpiarTextos();
-
+ 
     }//GEN-LAST:event_btnRegistrarActionPerformed
-
+ 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
             // TODO add your handling code here:       
         
@@ -424,7 +413,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
     acreedor.setAcreCodigo(Integer.parseInt(txtbuscado.getText())); // txtbuscado en minúscula
     acreedor = acreedor.getBuscarAcreedorPorId(acreedor);
     System.out.println("Acreedor retornado: " + acreedor);
-
+ 
     txtNombre.setText(acreedor.getAcreNombre());
     txtNit.setText(acreedor.getAcreNit());
     txtCuentaBancaria.setText(acreedor.getAcreCuentaBancaria());
@@ -436,7 +425,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
         bitacoradao.insert(idUsuario, codigoAplicacion, "Buscar acreedor");
         
     }//GEN-LAST:event_btnBuscarActionPerformed
-
+ 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
 //        // TODO add your handling code here:
         
@@ -446,7 +435,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
     acreedor.setAcreNit(txtNit.getText());
     acreedor.setAcreCuentaBancaria(txtCuentaBancaria.getText());
     acreedor.setAcreEstado(txtEstado.getText());
-
+ 
     acreedor.setModificarAcreedor(acreedor);
     JOptionPane.showMessageDialog(null, "Registro Modificado\n",
             "Información del Sistema", JOptionPane.INFORMATION_MESSAGE);
@@ -457,7 +446,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
     llenadoDeTablas();
     limpiarTextos();
     }//GEN-LAST:event_btnModificarActionPerformed
-
+ 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         limpiarTextos();
         habilitarBotones();
@@ -519,7 +508,7 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
     private void txtCuentaBancariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCuentaBancariaActionPerformed
         
     }//GEN-LAST:event_txtCuentaBancariaActionPerformed
-
+ 
     private void ayudasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ayudasActionPerformed
         // TODO add your handling code here:
     try {
@@ -536,8 +525,8 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
             ex.printStackTrace();
         } 
     }//GEN-LAST:event_ayudasActionPerformed
-
-
+ 
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Acreedores;
     private javax.swing.JButton ayudas;
@@ -548,7 +537,6 @@ int idUsuario = Controlador.clsUsuarioConectado.getUsuId(); //este se mandó a l
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JButton btnReportes;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel label3;
