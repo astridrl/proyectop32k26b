@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e836c20b-7540-414a-a7cd-199f184b2d36">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+    cpp.Cppcodigo                    AS ID_DOCUMENTO,
+    CONCAT('CPP-', cpp.Cppcodigo)    AS NO_RECIBO,
+    p.Pronombre                      AS PROVEEDOR,
+    p.Pronit                         AS NIT,
+    p.Procontacto                    AS CONTACTO,
+    p.Prodepartamento                AS DEPARTAMENTO,
+    cpp.Cppfechaemision              AS FECHA_EMISION,
+    cpp.Cppmontototal                AS MONTO_ORIGINAL,
+    cpp.Cppsaldopendiente            AS SALDO_PENDIENTE,
+    (cpp.Cppmontototal - cpp.Cppsaldopendiente) AS TOTAL_PAGADO,
+    CASE
+        WHEN cpp.Cppestado = 'P' THEN 'PENDIENTE'
+        WHEN cpp.Cppestado = 'C' THEN 'CANCELADO'
+        ELSE cpp.Cppestado
+    END                              AS ESTADO,
+    t.TTnombretipo                   AS TIPO_DEUDA,
+    m.Mccfecha                       AS FECHA_MOVIMIENTO,
+    m.Mccconcepto                    AS CONCEPTO,
+    CASE WHEN m.Mcctipo = 'CARGO' THEN m.Mccmonto ELSE 0 END AS CARGO,
+    CASE WHEN m.Mcctipo = 'ABONO' THEN ABS(m.Mccmonto) ELSE 0 END AS ABONO,
+    m.Mccsaldo                       AS SALDO_ACUMULADO
+FROM cuentasporpagar cpp
+JOIN proveedores p ON p.Procodigo = cpp.Procodigo
+LEFT JOIN movimientoscc m ON m.Procodigo = cpp.Procodigo
+LEFT JOIN Cattipotransaccion t ON t.TTid = cpp.TTid
+WHERE cpp.Procodigo = 1
+ORDER BY cpp.Cppfechaemision ASC, m.Mccfecha ASC]]>
+	</queryString>
+	<field name="ID_DOCUMENTO" class="java.lang.Integer"/>
+	<field name="NO_RECIBO" class="java.lang.String"/>
+	<field name="PROVEEDOR" class="java.lang.String"/>
+	<field name="NIT" class="java.lang.String"/>
+	<field name="CONTACTO" class="java.lang.String"/>
+	<field name="DEPARTAMENTO" class="java.lang.String"/>
+	<field name="FECHA_EMISION" class="java.sql.Date"/>
+	<field name="MONTO_ORIGINAL" class="java.math.BigDecimal"/>
+	<field name="SALDO_PENDIENTE" class="java.math.BigDecimal"/>
+	<field name="TOTAL_PAGADO" class="java.math.BigDecimal"/>
+	<field name="ESTADO" class="java.lang.String"/>
+	<field name="TIPO_DEUDA" class="java.lang.String"/>
+	<field name="FECHA_MOVIMIENTO" class="java.time.LocalDateTime"/>
+	<field name="CONCEPTO" class="java.lang.String"/>
+	<field name="CARGO" class="java.math.BigDecimal"/>
+	<field name="ABONO" class="java.math.BigDecimal"/>
+	<field name="SALDO_ACUMULADO" class="java.math.BigDecimal"/>
+	<group name="ClientesRp">
+		<groupExpression><![CDATA[$F{ID_DOCUMENTO}]]></groupExpression>
+		<groupHeader>
+			<band height="19"/>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="70" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="0" y="13" width="405" height="33" uuid="455af4ad-cfc9-4fa4-a5d3-f145bb2893d0"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Reportes Recibo Proveedores]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="35" width="555" height="1" uuid="08e88d98-45e2-40c3-9e7d-41bb860dd6d3"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement style="Column header" x="77" y="19" width="44" height="15" uuid="7a71df7c-9be5-4ea7-afd9-ae186fc127fc"/>
+				<text><![CDATA[PROVEEDOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="121" y="20" width="48" height="15" uuid="f4f4c521-3907-4b70-b114-9f5c8f336130"/>
+				<text><![CDATA[NIT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="169" y="19" width="73" height="15" uuid="c66bc8f8-afc1-4d51-ac94-14f4c7c982c4"/>
+				<text><![CDATA[CONTACTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="242" y="19" width="83" height="15" uuid="fe634f66-eb77-4ca5-b276-6feca5109dc4"/>
+				<text><![CDATA[TIPO DEUDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="0" y="19" width="77" height="15" uuid="19f8a97f-7b92-4ff1-bda2-737f359928ff"/>
+				<text><![CDATA[FECHA_MOVIMIENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="325" y="20" width="80" height="15" uuid="94dfc690-8fc6-47bf-a0f0-eac47b31ecf2"/>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="405" y="20" width="53" height="15" uuid="4a9a295a-7381-4b93-a007-ce7c374b8a55"/>
+				<text><![CDATA[CARGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="458" y="19" width="54" height="15" uuid="99dfde8e-70a0-4def-92f3-ce21bd103430"/>
+				<text><![CDATA[ABONO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="512" y="19" width="43" height="15" uuid="fae2f18f-1da9-4461-9997-2f2a9590804b"/>
+				<text><![CDATA[SALDO_ACUMULADO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1" uuid="40d5191f-ece1-489e-88dd-613c932cdaf4"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement style="Detail" x="77" y="0" width="44" height="15" uuid="2f49a951-5176-4b4a-be59-b2d52ab3f58e"/>
+				<textFieldExpression><![CDATA[$F{PROVEEDOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="121" y="1" width="48" height="15" uuid="79bde66e-61a4-42c0-ba2e-55b546f7b74f"/>
+				<textFieldExpression><![CDATA[$F{NIT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="169" y="0" width="73" height="15" uuid="7d802b78-ace7-460d-a459-c86964752e86"/>
+				<textFieldExpression><![CDATA[$F{CONTACTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="242" y="0" width="83" height="15" uuid="12a96a6a-e4e0-4571-9c94-ccd6435f30c7"/>
+				<textFieldExpression><![CDATA[$F{TIPO_DEUDA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="0" y="0" width="77" height="15" uuid="d07751c3-1f83-4ffe-85e1-d692dd2d7ff3"/>
+				<textFieldExpression><![CDATA[""+$F{FECHA_MOVIMIENTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="325" y="1" width="80" height="15" uuid="e9b225e6-99ab-4067-84e6-3dcb9ba66180"/>
+				<textFieldExpression><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="405" y="1" width="53" height="15" uuid="78732372-ce78-4413-8d28-ab0d0bce1ce8"/>
+				<textFieldExpression><![CDATA[$F{CARGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="458" y="0" width="54" height="15" uuid="3d4bfbb0-326e-4fc4-ab1b-22c7d12b8541"/>
+				<textFieldExpression><![CDATA[$F{ABONO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="512" y="0" width="43" height="15" uuid="c2d4c537-9669-4949-82ec-dde3b727a033"/>
+				<textFieldExpression><![CDATA[$F{SALDO_ACUMULADO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="752dcacc-0076-4191-8d9f-edf88f74fe1f"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="Column header" x="433" y="0" width="80" height="20" uuid="d2692895-8045-4b55-b075-87406fe1e797"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement style="Column header" x="513" y="0" width="40" height="20" uuid="93efa793-d811-49d1-b558-0e63215b2f80"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement style="Column header" x="0" y="0" width="197" height="20" uuid="4e4757f2-ddbb-42af-aed0-7327398823a3"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,158 +1,231 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ea06b0b3-da54-42aa-bc11-f882f457f65a">
-	<property name="ireport.zoom" value="1.6105100000000008"/>
-	<property name="ireport.x" value="186"/>
-	<property name="ireport.y" value="0"/>
-	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
-	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
-	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
-	<style name="Detail" fontName="Arial" fontSize="12"/>
-	<queryString>
-		<![CDATA[SELECT 
-    m.Mccfecha AS 'FECHA', 
-    m.Mccconcepto AS 'CONCEPTO', 
-    t.TTnombretipo AS 'TIPO_TRANSACCION',
-    -- Columnas separadas para análisis visual claro 
-    CASE WHEN m.Mcctipo = 'ABONO' THEN m.Mccmonto ELSE 0 END AS 'INGRESOS', 
-    CASE WHEN m.Mcctipo = 'CARGO' THEN m.Mccmonto ELSE 0 END AS 'EGRESOS', 
-    -- Monto con signo para cálculos de saldo 
-    CASE WHEN m.Mcctipo = 'CARGO' THEN (m.Mccmonto * -1) ELSE m.Mccmonto END AS 'MONTO_REAL' 
-FROM movimientoscc m 
-INNER JOIN cattipotransaccion t ON m.TTid = t.TTid 
-WHERE m.Acrecodigo = 1  
-  AND m.Mccmodulo = 'BANCOS' 
-  AND m.Mccfecha BETWEEN '2025-01-01' AND '2026-12-31' -- <--- Fechas reales
-ORDER BY m.Mccfecha ASC;]]>
-	</queryString>
-	<field name="FECHA" class="java.time.LocalDateTime"/>
-	<field name="CONCEPTO" class="java.lang.String"/>
-	<field name="TIPO_TRANSACCION" class="java.lang.String"/>
-	<field name="INGRESOS" class="java.math.BigDecimal"/>
-	<field name="EGRESOS" class="java.math.BigDecimal"/>
-	<field name="MONTO_REAL" class="java.math.BigDecimal"/>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
-	<title>
-		<band height="70" splitType="Stretch">
-			<staticText>
-				<reportElement style="Title" x="0" y="13" width="263" height="33" uuid="0caaa924-4fe7-4731-b533-2d483482a10d"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Movimientos]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="SubTitle" x="117" y="46" width="157" height="22" uuid="f8af9937-c9a7-45e2-8458-627ced80a57d"/>
-				<text><![CDATA[]]></text>
-			</staticText>
-		</band>
-	</title>
-	<pageHeader>
-		<band splitType="Stretch"/>
-	</pageHeader>
-	<columnHeader>
-		<band height="36" splitType="Stretch">
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="35" width="555" height="1" uuid="656a8f28-4110-4889-820a-f5a9bcdb55f3"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
-			<staticText>
-				<reportElement x="0" y="15" width="100" height="20" uuid="ce0f118f-a0d7-4b79-9ca5-e589e48431f2"/>
-				<text><![CDATA[FECHA]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="100" y="15" width="100" height="20" uuid="fd4206bf-91d2-489b-9b67-9ca46465efdd"/>
-				<text><![CDATA[CONCEPTO]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="200" y="15" width="100" height="20" uuid="cf1fa4aa-1c11-41c1-88f9-03fdb81a9f21"/>
-				<text><![CDATA[TIPO TRANSACCION]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="300" y="16" width="100" height="20" uuid="0a3fe3d9-e61c-4ac4-b81e-509043df3704"/>
-				<text><![CDATA[INGRESOS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="400" y="15" width="100" height="20" uuid="a1c8d799-0b74-46ad-952d-a6687588fc55"/>
-				<text><![CDATA[EGRESOS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="500" y="16" width="100" height="20" uuid="872f699a-8fe0-4cce-94fe-0b545912c167"/>
-				<text><![CDATA[MONTO_REAL]]></text>
-			</staticText>
-		</band>
-	</columnHeader>
-	<detail>
-		<band height="24" splitType="Stretch">
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1" uuid="c2a923b6-49f9-4e24-a189-fa9c2ccfc07c"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
-			<textField>
-				<reportElement x="0" y="1" width="100" height="15" uuid="5e7b7bd3-b3e7-43d5-bf4d-409e7c5a7cca"/>
-				<textFieldExpression><![CDATA[""+$F{FECHA}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="102" y="1" width="98" height="14" uuid="50ddf1e3-179b-4b81-b6dc-e4fbc38a5377"/>
-				<textFieldExpression><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="400" y="0" width="100" height="15" uuid="8f397353-3b8f-4cc0-87a8-06d37ca136ab"/>
-				<textFieldExpression><![CDATA[$F{EGRESOS}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="200" y="0" width="100" height="15" uuid="8db96cf4-886c-4b13-873a-c012525f215e"/>
-				<textFieldExpression><![CDATA[$F{TIPO_TRANSACCION}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="300" y="1" width="91" height="16" uuid="7f753975-02c1-41fc-b632-352dd005753b"/>
-				<textFieldExpression><![CDATA[$F{INGRESOS}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="500" y="1" width="87" height="16" uuid="359c8bca-9620-4d03-b172-02fd0e797c92"/>
-				<textFieldExpression><![CDATA[$F{MONTO_REAL}]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch">
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="6038fefd-d1b4-471a-b4b3-55515de56542"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#999999"/>
-				</graphicElement>
-			</line>
-		</band>
-	</columnFooter>
-	<pageFooter>
-		<band height="20" splitType="Stretch">
-			<textField>
-				<reportElement style="Column header" x="433" y="0" width="80" height="20" uuid="426d8779-46e5-44c4-8036-ff0c074f0e20"/>
-				<textElement textAlignment="Right">
-					<font size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report">
-				<reportElement style="Column header" x="513" y="0" width="40" height="20" uuid="53f54ace-9850-4fe4-90e0-79ae5741b618"/>
-				<textElement>
-					<font size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-			<textField pattern="EEEEE dd MMMMM yyyy">
-				<reportElement style="Column header" x="0" y="0" width="197" height="20" uuid="da19f50e-ac2c-48bc-b96b-f70bc52a5a7d"/>
-				<textElement>
-					<font size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageFooter>
-	<summary>
-		<band splitType="Stretch"/>
-	</summary>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports 
+  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+  name="rptMovimientosCC" language="groovy"
+  pageWidth="595" pageHeight="842"
+  columnWidth="555" leftMargin="20" rightMargin="20"
+  topMargin="20" bottomMargin="20">
+
+  <!-- ── ESTILOS ───────────────────────────── -->
+  <style name="Title"         fontName="Arial" fontSize="20" isBold="true"/>
+  <style name="ColHeader"     fontName="Arial" fontSize="10" isBold="true" forecolor="#FFFFFF" backcolor="#1F4E79" isDefault="false"/>
+  <style name="Detail"        fontName="Arial" fontSize="10"/>
+  <style name="DetailAlt"     fontName="Arial" fontSize="10" backcolor="#E8F0F7"/>
+  <style name="Total"         fontName="Arial" fontSize="11" isBold="true"/>
+
+  <!-- ── PARÁMETROS DINÁMICOS ──────────────── -->
+  <!-- Estos los envías desde Java -->
+  <parameter name="P_CLIID"      class="java.lang.Integer">
+    <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+  </parameter>
+  <parameter name="P_PROCODIGO"  class="java.lang.Integer">
+    <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+  </parameter>
+  <parameter name="P_ACRECODIGO" class="java.lang.Integer">
+    <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+  </parameter>
+  <parameter name="P_MODULO"     class="java.lang.String">
+    <defaultValueExpression><![CDATA["TODOS"]]></defaultValueExpression>
+  </parameter>
+  <parameter name="P_FECHA_INI"  class="java.lang.String">
+    <defaultValueExpression><![CDATA["2025-01-01"]]></defaultValueExpression>
+  </parameter>
+  <parameter name="P_FECHA_FIN"  class="java.lang.String">
+    <defaultValueExpression><![CDATA["2026-12-31"]]></defaultValueExpression>
+  </parameter>
+  <parameter name="P_NOMBRE"     class="java.lang.String">
+    <defaultValueExpression><![CDATA["Todos"]]></defaultValueExpression>
+  </parameter>
+
+  <!-- ── QUERY DINÁMICO ────────────────────── -->
+  <queryString>
+    <![CDATA[
+    SELECT
+        m.Mccfecha                                              AS FECHA,
+        m.Mccconcepto                                           AS CONCEPTO,
+        t.TTnombretipo                                          AS TIPO_TRANSACCION,
+        m.Mcctipo                                               AS TIPO,
+        CASE WHEN m.Mcctipo = 'CARGO' THEN m.Mccmonto ELSE 0   END AS INGRESOS,
+        CASE WHEN m.Mcctipo = 'ABONO' THEN ABS(m.Mccmonto) ELSE 0 END AS EGRESOS,
+        m.Mccsaldo                                              AS SALDO,
+        COALESCE(c.Clinombre,  '')                              AS CLIENTE,
+        COALESCE(p.Pronombre,  '')                              AS PROVEEDOR,
+        COALESCE(a.Acrenombre, '')                              AS ACREEDOR
+    FROM movimientoscc m
+    LEFT JOIN Cattipotransaccion t ON m.TTid      = t.TTid
+    LEFT JOIN clientes            c ON m.Cliid     = c.Cliid
+    LEFT JOIN proveedores         p ON m.Procodigo = p.Procodigo
+    LEFT JOIN acreedores          a ON m.Acrecodigo= a.Acrecodigo
+    WHERE
+        ($P{P_CLIID}      = 0 OR m.Cliid      = $P{P_CLIID})
+        AND ($P{P_PROCODIGO}  = 0 OR m.Procodigo  = $P{P_PROCODIGO})
+        AND ($P{P_ACRECODIGO} = 0 OR m.Acrecodigo = $P{P_ACRECODIGO})
+        AND ($P{P_MODULO}    = 'TODOS' OR m.Mccmodulo = $P{P_MODULO})
+        AND m.Mccfecha BETWEEN $P{P_FECHA_INI} AND $P{P_FECHA_FIN}
+    ORDER BY m.Mccfecha ASC
+    ]]>
+  </queryString>
+
+  <!-- ── CAMPOS ────────────────────────────── -->
+  <field name="FECHA"           class="java.sql.Timestamp"/>
+  <field name="CONCEPTO"        class="java.lang.String"/>
+  <field name="TIPO_TRANSACCION" class="java.lang.String"/>
+  <field name="TIPO"            class="java.lang.String"/>
+  <field name="INGRESOS"        class="java.math.BigDecimal"/>
+  <field name="EGRESOS"         class="java.math.BigDecimal"/>
+  <field name="SALDO"           class="java.math.BigDecimal"/>
+  <field name="CLIENTE"         class="java.lang.String"/>
+  <field name="PROVEEDOR"       class="java.lang.String"/>
+  <field name="ACREEDOR"        class="java.lang.String"/>
+
+  <!-- ── VARIABLES DE TOTALES ──────────────── -->
+  <variable name="TOTAL_INGRESOS" class="java.math.BigDecimal" calculation="Sum">
+    <variableExpression><![CDATA[$F{INGRESOS}]]></variableExpression>
+    <initialValueExpression><![CDATA[new java.math.BigDecimal(0)]]></initialValueExpression>
+  </variable>
+  <variable name="TOTAL_EGRESOS" class="java.math.BigDecimal" calculation="Sum">
+    <variableExpression><![CDATA[$F{EGRESOS}]]></variableExpression>
+    <initialValueExpression><![CDATA[new java.math.BigDecimal(0)]]></initialValueExpression>
+  </variable>
+
+  <!-- ── TITLE ─────────────────────────────── -->
+  <title>
+    <band height="80">
+      <staticText>
+        <reportElement style="Title" x="0" y="0" width="350" height="30"/>
+        <text><![CDATA[Reporte de Movimientos CC]]></text>
+      </staticText>
+      <textField>
+        <reportElement x="0" y="35" width="300" height="20"/>
+        <textElement><font fontName="Arial" size="11" isBold="true"/></textElement>
+        <textFieldExpression><![CDATA["Cuenta: " + $P{P_NOMBRE}]]></textFieldExpression>
+      </textField>
+      <textField>
+        <reportElement x="0" y="55" width="400" height="20"/>
+        <textElement><font fontName="Arial" size="10"/></textElement>
+        <textFieldExpression>
+          <![CDATA["Período: " + $P{P_FECHA_INI} + " al " + $P{P_FECHA_FIN}]]>
+        </textFieldExpression>
+      </textField>
+    </band>
+  </title>
+
+  <!-- ── COLUMN HEADER ─────────────────────── -->
+  <columnHeader>
+    <band height="30">
+      <staticText>
+        <reportElement style="ColHeader" x="0"   y="5" width="90"  height="20" backcolor="#1F4E79"/>
+        <textElement><font forecolor="#FFFFFF"/></textElement>
+        <text><![CDATA[FECHA]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="ColHeader" x="90"  y="5" width="155" height="20" backcolor="#1F4E79"/>
+        <textElement><font forecolor="#FFFFFF"/></textElement>
+        <text><![CDATA[CONCEPTO]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="ColHeader" x="245" y="5" width="100" height="20" backcolor="#1F4E79"/>
+        <textElement><font forecolor="#FFFFFF"/></textElement>
+        <text><![CDATA[TIPO]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="ColHeader" x="345" y="5" width="70"  height="20" backcolor="#1F4E79"/>
+        <textElement textAlignment="Right"><font forecolor="#FFFFFF"/></textElement>
+        <text><![CDATA[CARGO]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="ColHeader" x="415" y="5" width="70"  height="20" backcolor="#1F4E79"/>
+        <textElement textAlignment="Right"><font forecolor="#FFFFFF"/></textElement>
+        <text><![CDATA[ABONO]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="ColHeader" x="485" y="5" width="70"  height="20" backcolor="#1F4E79"/>
+        <textElement textAlignment="Right"><font forecolor="#FFFFFF"/></textElement>
+        <text><![CDATA[SALDO]]></text>
+      </staticText>
+    </band>
+  </columnHeader>
+
+  <!-- ── DETAIL ────────────────────────────── -->
+  <detail>
+    <band height="20">
+      <textField pattern="dd/MM/yyyy HH:mm">
+        <reportElement x="0"   y="2" width="90"  height="16"/>
+        <textElement><font fontName="Arial" size="9"/></textElement>
+        <textFieldExpression><![CDATA[$F{FECHA}]]></textFieldExpression>
+      </textField>
+      <textField isStretchWithOverflow="true">
+        <reportElement x="90"  y="2" width="155" height="16"/>
+        <textElement><font fontName="Arial" size="9"/></textElement>
+        <textFieldExpression><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
+      </textField>
+      <textField>
+        <reportElement x="245" y="2" width="100" height="16"/>
+        <textElement><font fontName="Arial" size="9"/></textElement>
+        <textFieldExpression><![CDATA[$F{TIPO_TRANSACCION}]]></textFieldExpression>
+      </textField>
+      <textField pattern="Q #,##0.00">
+        <reportElement x="345" y="2" width="70"  height="16"/>
+        <textElement textAlignment="Right"><font fontName="Arial" size="9"/></textElement>
+        <textFieldExpression><![CDATA[$F{INGRESOS}]]></textFieldExpression>
+      </textField>
+      <textField pattern="Q #,##0.00">
+        <reportElement x="415" y="2" width="70"  height="16"/>
+        <textElement textAlignment="Right"><font fontName="Arial" size="9"/></textElement>
+        <textFieldExpression><![CDATA[$F{EGRESOS}]]></textFieldExpression>
+      </textField>
+      <textField pattern="Q #,##0.00">
+        <reportElement x="485" y="2" width="70"  height="16"/>
+        <textElement textAlignment="Right"><font fontName="Arial" size="9"/></textElement>
+        <textFieldExpression><![CDATA[$F{SALDO}]]></textFieldExpression>
+      </textField>
+    </band>
+  </detail>
+
+  <!-- ── SUMMARY (TOTALES) ─────────────────── -->
+  <summary>
+    <band height="40">
+      <line>
+        <reportElement x="0" y="2" width="555" height="1"/>
+        <graphicElement><pen lineWidth="1.0" lineColor="#1F4E79"/></graphicElement>
+      </line>
+      <staticText>
+        <reportElement style="Total" x="245" y="8" width="100" height="20"/>
+        <text><![CDATA[TOTALES:]]></text>
+      </staticText>
+      <textField pattern="Q #,##0.00">
+        <reportElement style="Total" x="345" y="8" width="70" height="20"/>
+        <textElement textAlignment="Right"/>
+        <textFieldExpression><![CDATA[$V{TOTAL_INGRESOS}]]></textFieldExpression>
+      </textField>
+      <textField pattern="Q #,##0.00">
+        <reportElement style="Total" x="415" y="8" width="70" height="20"/>
+        <textElement textAlignment="Right"/>
+        <textFieldExpression><![CDATA[$V{TOTAL_EGRESOS}]]></textFieldExpression>
+      </textField>
+    </band>
+  </summary>
+
+  <!-- ── PAGE FOOTER ───────────────────────── -->
+  <pageFooter>
+    <band height="20">
+      <textField pattern="dd/MM/yyyy HH:mm">
+        <reportElement x="0" y="0" width="200" height="20"/>
+        <textElement><font fontName="Arial" size="9"/></textElement>
+        <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+      </textField>
+      <textField>
+        <reportElement x="433" y="0" width="60" height="20"/>
+        <textElement textAlignment="Right"><font fontName="Arial" size="9"/></textElement>
+        <textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER} + " de"]]></textFieldExpression>
+      </textField>
+      <textField evaluationTime="Report">
+        <reportElement x="493" y="0" width="60" height="20"/>
+        <textElement><font fontName="Arial" size="9"/></textElement>
+        <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+      </textField>
+    </band>
+  </pageFooter>
 </jasperReport>

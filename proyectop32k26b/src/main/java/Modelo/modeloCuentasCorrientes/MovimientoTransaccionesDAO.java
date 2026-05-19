@@ -91,14 +91,41 @@ public class MovimientoTransaccionesDAO {
         try {
             conn = Conexion.getConnection();
             stmt = conn.prepareStatement(SQL_INSERT);
+            
             stmt.setDouble(1, monto);
             stmt.setString(2, tipo);      
             stmt.setString(3, concepto);  
             stmt.setDouble(4, saldo);
-            stmt.setInt(5, cliid);
-            stmt.setInt(6, procodigo);
-            stmt.setInt(7, acrecodigo);
-            stmt.setInt(8, venid);
+
+            // Validación del ID de Cliente (Parámetro 5)
+            if (cliid > 0) {
+                stmt.setInt(5, cliid);
+            } else {
+                stmt.setNull(5, java.sql.Types.INTEGER);
+            }
+
+            // Validación del Código de Proveedor (Parámetro 6)
+            if (procodigo > 0) {
+                stmt.setInt(6, procodigo);
+            } else {
+                stmt.setNull(6, java.sql.Types.INTEGER);
+            }
+
+            // Validación del Código de Acreedor (Parámetro 7)
+            if (acrecodigo > 0) {
+                stmt.setInt(7, acrecodigo);
+            } else {
+                stmt.setNull(7, java.sql.Types.INTEGER);
+            }
+
+            // Validación del ID de Vendedor (Parámetro 8)
+            if (venid > 0) {
+                stmt.setInt(8, venid);
+            } else {
+                stmt.setNull(8, java.sql.Types.INTEGER);
+            }
+
+            // Parámetros restantes obligatorios
             stmt.setInt(9, TTid);
             stmt.setString(10, modulo);    
             stmt.setInt(11, origenid);

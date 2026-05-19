@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9067517e-e0ea-44db-88ed-df4aa13dece5">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+    cpc.Cpccodigo                    AS ID_DOCUMENTO,
+    CONCAT('CPC-', cpc.Cpccodigo)    AS NO_RECIBO,
+    c.Clinombre                      AS CLIENTE,
+    c.Clinit                         AS NIT,
+    c.Clitelefono                    AS TELEFONO,
+    c.Clidireccion                   AS DIRECCION,
+    cpc.Cpcfecha                     AS FECHA_EMISION,
+    cpc.Cpcmonto                     AS MONTO_ORIGINAL,
+    cpc.Cpcsaldo                     AS SALDO_PENDIENTE,
+    (cpc.Cpcmonto - cpc.Cpcsaldo)    AS TOTAL_PAGADO,
+    CASE 
+        WHEN cpc.Cpcestado = 'P' THEN 'PENDIENTE'
+        WHEN cpc.Cpcestado = 'C' THEN 'CANCELADO'
+        ELSE cpc.Cpcestado
+    END                              AS ESTADO,
+    m.Mccfecha                       AS FECHA_MOVIMIENTO,
+    m.Mccconcepto                    AS CONCEPTO,
+    CASE WHEN m.Mcctipo = 'CARGO' THEN m.Mccmonto ELSE 0 END AS CARGO,
+    CASE WHEN m.Mcctipo = 'ABONO' THEN ABS(m.Mccmonto) ELSE 0 END AS ABONO,
+    m.Mccsaldo                       AS SALDO_ACUMULADO,
+    t.TTnombretipo                   AS TIPO_TRANSACCION
+FROM cuentasporcobrar cpc
+JOIN clientes c ON c.Cliid = cpc.Cliid
+LEFT JOIN movimientoscc m ON m.Cliid = cpc.Cliid
+LEFT JOIN Cattipotransaccion t ON t.TTid = m.TTid
+WHERE cpc.Cliid = 1
+ORDER BY cpc.Cpcfecha ASC, m.Mccfecha ASC]]>
+	</queryString>
+	<field name="ID_DOCUMENTO" class="java.lang.Integer"/>
+	<field name="NO_RECIBO" class="java.lang.String"/>
+	<field name="CLIENTE" class="java.lang.String"/>
+	<field name="NIT" class="java.lang.String"/>
+	<field name="TELEFONO" class="java.lang.String"/>
+	<field name="DIRECCION" class="java.lang.String"/>
+	<field name="FECHA_EMISION" class="java.sql.Date"/>
+	<field name="MONTO_ORIGINAL" class="java.math.BigDecimal"/>
+	<field name="SALDO_PENDIENTE" class="java.math.BigDecimal"/>
+	<field name="TOTAL_PAGADO" class="java.math.BigDecimal"/>
+	<field name="ESTADO" class="java.lang.String"/>
+	<field name="FECHA_MOVIMIENTO" class="java.time.LocalDateTime"/>
+	<field name="CONCEPTO" class="java.lang.String"/>
+	<field name="CARGO" class="java.math.BigDecimal"/>
+	<field name="ABONO" class="java.math.BigDecimal"/>
+	<field name="SALDO_ACUMULADO" class="java.math.BigDecimal"/>
+	<field name="TIPO_TRANSACCION" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="73" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="0" y="13" width="416" height="33" uuid="c2c19fec-3198-41aa-8ac6-e5c7ed6c51a2"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Reportes Recibo Clientes]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="35" width="555" height="1" uuid="d8dc7ad3-f4c5-48bf-b667-f745c0ddb522"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement style="Column header" x="100" y="19" width="32" height="15" uuid="0a8fc7bc-fe86-4424-94d1-e9b0237ad718"/>
+				<text><![CDATA[NO_RECIBO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="132" y="19" width="32" height="15" uuid="e091b599-14c6-444f-9172-52f85ccc6a3b"/>
+				<text><![CDATA[CLIENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="164" y="19" width="60" height="15" uuid="6661039c-ca32-453c-bc4d-23522b945673"/>
+				<text><![CDATA[NIT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="224" y="19" width="70" height="15" uuid="36210f08-21de-4b1b-9329-6334871b4092"/>
+				<text><![CDATA[TELEFONO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="0" y="19" width="100" height="15" uuid="98843b68-3df1-425b-8412-3d62c7c710ab"/>
+				<text><![CDATA[FECHA_MOVIMIENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="294" y="18" width="79" height="15" uuid="18fb7f99-823a-4402-9dba-5ecd0de90556"/>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="373" y="19" width="50" height="15" uuid="2024504e-c2ea-46e1-873a-407e7ac4b03b"/>
+				<text><![CDATA[CARGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="426" y="19" width="47" height="15" uuid="116a2d2c-415d-4aca-b9f2-86aacd3618ef"/>
+				<text><![CDATA[ABONO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="473" y="19" width="80" height="15" uuid="ca123f29-69f8-4954-9c88-19aef72140f3"/>
+				<text><![CDATA[SALDO ACUMULADO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1" uuid="014421b6-30d1-4025-a7fc-3e623f741173"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement style="Detail" x="100" y="0" width="32" height="15" uuid="f6d79843-ec24-4b67-b9a2-62428f977f08"/>
+				<textFieldExpression><![CDATA[$F{NO_RECIBO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="132" y="0" width="32" height="15" uuid="9cca1c6e-70ae-492c-855b-10c6ee3331de"/>
+				<textFieldExpression><![CDATA[$F{CLIENTE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="164" y="0" width="60" height="15" uuid="bcec287e-6392-4b1e-80b7-f7e71ee39007"/>
+				<textFieldExpression><![CDATA[$F{NIT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="224" y="0" width="70" height="15" uuid="b751ae90-df50-4758-9aea-0003fe9d9e5c"/>
+				<textFieldExpression><![CDATA[$F{TELEFONO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="0" y="0" width="100" height="15" uuid="5e5c372d-3562-4515-9844-581b7105bdc9"/>
+				<textFieldExpression><![CDATA[""+$F{FECHA_MOVIMIENTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="373" y="0" width="50" height="15" uuid="ea1b4460-0d3b-4a29-be87-26ba7de4bedd"/>
+				<textFieldExpression><![CDATA[$F{CARGO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="426" y="0" width="47" height="15" uuid="1a8aa231-ddfa-4182-aef7-b45bc2106d44"/>
+				<textFieldExpression><![CDATA[$F{ABONO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="473" y="0" width="80" height="15" uuid="767e322d-9674-463d-ad50-adc5c56ee723"/>
+				<textFieldExpression><![CDATA[$F{SALDO_ACUMULADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="294" y="1" width="79" height="15" uuid="13206c0b-e77a-4b3f-a495-dc02bd08aeeb"/>
+				<textFieldExpression><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="9172e4bc-9ea1-46ec-8aa4-bcd21d50eea5"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="Column header" x="433" y="0" width="80" height="20" uuid="3c47b1e6-6c0f-4037-9851-283a833866e6"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement style="Column header" x="513" y="0" width="40" height="20" uuid="f2f05e05-8b26-44ab-98ec-bacbbc8010b2"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement style="Column header" x="0" y="0" width="197" height="20" uuid="3de432ab-4108-4d8b-a07a-d77b94021ce6"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
