@@ -19,6 +19,21 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
+            <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+                <mainClass>Vista.frmLogin</mainClass>
+                <executable>java</executable>
+                <arguments>
+                    <argument>--enable-preview</argument>
+                    <argument>-classpath</argument>
+                    <argument>%classpath</argument>
+                    <argument>Vista.frmLogin</argument>
+                </arguments>
+            </configuration>
+        </plugin>
         </plugins>
     </build>
     <repositories>
@@ -32,7 +47,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>Vista.frmLogin</exec.mainClass>
-        <exec.vmArgs>--enable-preview</exec.vmArgs>
     </properties>
        
     <dependencies>
