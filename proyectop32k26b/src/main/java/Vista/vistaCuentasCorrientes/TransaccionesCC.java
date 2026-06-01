@@ -36,7 +36,7 @@ import Modelo.Compras.ProveedorDAO;
  * @author WINDOWS
  * Módulo de Cuentas Corrientes - Optimizado para Recibos de Proveedores
  */
-public class TransaccionesCC extends javax.swing.JFrame {
+public class TransaccionesCC extends javax.swing.JInternalFrame {
 
     // Instancias de Conexión y DAOs
     private Conexion cp = new Conexion(); // Corrección: Instancia de conexión explícita
@@ -50,6 +50,11 @@ public class TransaccionesCC extends javax.swing.JFrame {
     // REVISA QUE QUEDE ASÍ (Sin la palabra static)
     private Modelo.Bancos.ClientesDAO clientesDAO = new Modelo.Bancos.ClientesDAO();
     private Modelo.Compras.ProveedorDAO proveedorDAO = new Modelo.Compras.ProveedorDAO();
+    
+    // Modelos de Tablas para Recibos de Clientes (Pestaña 4)
+    private DefaultTableModel modeloPendientes1;
+    private DefaultTableModel modeloAsignadas1;
+    private DefaultTableModel modeloAplicacion1;
 
     /**
      * Constructor de la Ventana
@@ -58,9 +63,12 @@ public class TransaccionesCC extends javax.swing.JFrame {
         initComponents(); 
         
         // 1. Propiedades de visualización de la ventana
-        setLocationRelativeTo(null);
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-        this.setTitle("SIG - Gestión de Recibos y Cuentas Corrientes");
+            setClosable(true);
+            setIconifiable(true);
+            setMaximizable(true);
+            setResizable(true);
+            setTitle("Transacciones");
+            setVisible(true);
 
         // 2. Listeners para controlar exclusión mutua de Clientes y Proveedores
         jcbClientes.addActionListener(new java.awt.event.ActionListener() {
@@ -163,117 +171,94 @@ public class TransaccionesCC extends javax.swing.JFrame {
 
  
     private void buscarClienteYFacturas(String idClienteStr) {
-    // Limpiamos la tabla superior de pendientes antes de la nueva carga
-        modeloPendientes.setRowCount(0);
-    Connection con = null;
-    
-    try {
-        con = cp.getConnection();
-        int cliid = Integer.parseInt(idClienteStr);
+        modeloPendientes1.setRowCount(0);
+        Connection con = null;
+        
+        try {
+            con = cp.getConnection();
+            int cliid = Integer.parseInt(idClienteStr);
 
-        // Buscar nombre del cliente
-        String sqlCliente = "SELECT Clinombre FROM clientes WHERE Cliid = ?";
-        try (PreparedStatement psCli = con.prepareStatement(sqlCliente)) {
-            psCli.setInt(1, cliid);
-            try (ResultSet rsCli = psCli.executeQuery()) {
-                if (rsCli.next()) {
-                    txtIdCliente.setText(idClienteStr);
-                    txtNombreCliente.setText(rsCli.getString("Clinombre"));
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                        "El código de cliente no existe.", "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                    return;
+            String sqlCliente = "SELECT Clinombre FROM clientes WHERE Cliid = ?";
+            try (PreparedStatement psCli = con.prepareStatement(sqlCliente)) {
+                psCli.setInt(1, cliid);
+                try (ResultSet rsCli = psCli.executeQuery()) {
+                    if (rsCli.next()) {
+                        txtIdCliente.setText(idClienteStr);
+                        txtNombreCliente.setText(rsCli.getString("Clinombre"));
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                            "El código de cliente no existe.", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                 }
             }
-        }
 
-        // ✔ Columnas reales de cuentasporcobrar
-        String sqlFacturas = "SELECT Cpccodigo, Cpcfecha, Cpcsaldo, Cpcmonto " +
-                             "FROM cuentasporcobrar " +
-                             "WHERE Cliid = ? AND Cpcsaldo > 0 AND Cpcestado = 'P'";
+            String sqlFacturas = "SELECT Cpccodigo, Cpcfecha, Cpcsaldo, Cpcmonto " +
+                                 "FROM cuentasporcobrar " +
+                                 "WHERE Cliid = ? AND Cpcsaldo > 0 AND Cpcestado = 'P'";
 
-        try (PreparedStatement psFac = con.prepareStatement(sqlFacturas)) {
-            psFac.setInt(1, cliid);
-            try (ResultSet rsFac = psFac.executeQuery()) {
-                while (rsFac.next()) {
-                    modeloPendientes.addRow(new Object[]{
-                        rsFac.getInt("Cpccodigo"),       // ID único
-                        "CPC-" + rsFac.getInt("Cpccodigo"), // número descriptivo
-                        rsFac.getDate("Cpcfecha"),        // fecha emisión
-                        rsFac.getDouble("Cpcsaldo")       // saldo pendiente
-                    });
+            try (PreparedStatement psFac = con.prepareStatement(sqlFacturas)) {
+                psFac.setInt(1, cliid);
+                try (ResultSet rsFac = psFac.executeQuery()) {
+                    while (rsFac.next()) {
+                        modeloPendientes1.addRow(new Object[]{
+                            rsFac.getInt("Cpccodigo"),
+                            "CPC-" + rsFac.getInt("Cpccodigo"),
+                            rsFac.getDate("Cpcfecha"),
+                            rsFac.getDouble("Cpcsaldo")
+                        });
+                    }
                 }
             }
-        }
 
-        if (modeloPendientes.getRowCount() == 0) {
+            if (modeloPendientes1.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this,
+                    "El cliente no registra facturas pendientes de cobro.",
+                    "Información", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this,
-                "El cliente no registra facturas pendientes de cobro.",
-                "Información", JOptionPane.INFORMATION_MESSAGE);
+                "El código de cliente debe ser un número.", "Error",
+                JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                "Error SQL: " + e.getMessage(), "Error SQL",
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } finally {
+            if (con != null) {
+                try { con.close(); } catch (Exception e) { e.printStackTrace(); }
+            }
         }
-
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this,
-            "El código de cliente debe ser un número.", "Error",
-            JOptionPane.ERROR_MESSAGE);
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this,
-            "Error SQL: " + e.getMessage(), "Error SQL",
-            JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    } finally {
-        if (con != null) {
-            try { con.close(); } catch (Exception e) { e.printStackTrace(); }
-        }
-    }
     }
     
-        private void validarMontosFormasDePago() {
-            DefaultTableModel modelAp = (DefaultTableModel) tblAplicacion.getModel();
-            double totalFormasPago = 0;
-
-            // Sumamos de manera segura lo que el usuario escribió en la columna 'Valor' (columna 2)
-            for (int i = 0; i < modelAp.getRowCount(); i++) {
-                try {
-                    Object valorObj = modelAp.getValueAt(i, 2);
-                    double valor = 0.0;
-
-                    if (valorObj != null && !valorObj.toString().trim().isEmpty()) {
-                        // Quitamos espacios y cambiamos comas por puntos por si acaso
-                        String valorStr = valorObj.toString().trim().replace(",", ".");
-                        valor = Double.parseDouble(valorStr);
-                    }
-
-                    if (valor < 0) {
-                        JOptionPane.showMessageDialog(this, "El valor no puede ser negativo.");
-                        modelAp.setValueAt(0.00, i, 2);
-                        valor = 0;
-                    }
-                    totalFormasPago += valor;
-                } catch (NumberFormatException e) {
-                    modelAp.setValueAt(0.00, i, 2);
-                }
+    private void validarMontosFormasDePago() {
+        DefaultTableModel modelAp = (DefaultTableModel) tblAplicacion1.getModel();
+    double totalFormasPago = 0;
+    for (int i = 0; i < modelAp.getRowCount(); i++) {
+        try {
+            Object val = modelAp.getValueAt(i, 2);
+            if (val != null && !val.toString().trim().isEmpty()) {
+                totalFormasPago += Double.parseDouble(val.toString().trim().replace(",", "."));
             }
+        } catch (NumberFormatException e) {
+            modelAp.setValueAt(0.00, i, 2);
+        }
+    }
+    double totalRequerido = 0;
+    try {
+        if (txtTotalPagado1 != null && !txtTotalPagado1.getText().trim().isEmpty()) {
+            totalRequerido = Double.parseDouble(txtTotalPagado1.getText().trim().replace(",", "."));
+        }
+    } catch (Exception e) { totalRequerido = 0; }
 
-            // Recuperamos cuánto se requiere pagar de forma ultra segura
-            double totalRequerido = 0;
-            try {
-                if (txtTotalPagado != null && !txtTotalPagado.getText().trim().isEmpty()) {
-                    String limpio = txtTotalPagado.getText().trim().replace(",", ".");
-                    totalRequerido = Double.parseDouble(limpio);
-                }
-            } catch (Exception e) {
-                totalRequerido = 0;
-            }
-
-            // Si las formas de pago superan lo asignado en las facturas, mandamos la advertencia
-            if (totalFormasPago > totalRequerido) {
-                JOptionPane.showMessageDialog(this, 
-                    "¡Atención! El monto en Formas de Pago (Q " + String.format("%.2f", totalFormasPago) + 
-                    ") excede al total abonado en las facturas (Q " + String.format("%.2f", totalRequerido) + ").", 
-                    "Descuadre de Caja", JOptionPane.WARNING_MESSAGE);
-            }
+    if (totalFormasPago > totalRequerido) {
+        JOptionPane.showMessageDialog(this,
+            "El monto en Formas de Pago excede al total abonado.",
+            "Descuadre", JOptionPane.WARNING_MESSAGE);
+    }
         }
     
     /**
@@ -328,34 +313,40 @@ public class TransaccionesCC extends javax.swing.JFrame {
      * Calcula los totales del recibo en tiempo real recorriendo la tabla inferior
      */
     private void calcularTotalesRecibo() {
+        calcularTotalesRecibo(false);
+    }
+
+    private void calcularTotalesRecibo(boolean esCliente) {
+        DefaultTableModel modelo = esCliente ? modeloAsignadas1 : modeloAsignadas;
+        javax.swing.JTextField txtTotalFact = esCliente ? txtTotalFacturas1 : txtTotalFacturas;
+        javax.swing.JTextField txtTotalPag = esCliente ? txtTotalPagado1 : txtTotalPagado;
+
         double sumaSaldosAnteriores = 0;
         double sumaMontosAbonados = 0;
 
-        for (int i = 0; i < modeloAsignadas.getRowCount(); i++) {
+        for (int i = 0; i < modelo.getRowCount(); i++) {
             try {
-                double saldoAnterior = Double.parseDouble(modeloAsignadas.getValueAt(i, 2).toString());
-                double montoAbonado = Double.parseDouble(modeloAsignadas.getValueAt(i, 3).toString());
+                double saldoAnterior = Double.parseDouble(modelo.getValueAt(i, 2).toString());
+                double montoAbonado = Double.parseDouble(modelo.getValueAt(i, 3).toString());
                 
-                // Forzar regla de negocio: No se puede abonar más de lo que se debe
                 if (montoAbonado > saldoAnterior) {
                     JOptionPane.showMessageDialog(this, "El abono no puede ser mayor al saldo pendiente.");
                     montoAbonado = saldoAnterior;
-                    modeloAsignadas.setValueAt(montoAbonado, i, 3);
+                    modelo.setValueAt(montoAbonado, i, 3);
                 }
 
                 double nuevoSaldo = saldoAnterior - montoAbonado;
-                modeloAsignadas.setValueAt(nuevoSaldo, i, 4);
+                modelo.setValueAt(nuevoSaldo, i, 4);
 
                 sumaSaldosAnteriores += saldoAnterior;
                 sumaMontosAbonados += montoAbonado;
             } catch (NumberFormatException e) {
-                // Previene errores de escritura vacía o letras
-                modeloAsignadas.setValueAt(0.0, i, 3);
+                modelo.setValueAt(0.0, i, 3);
             }
         }
 
-        txtTotalFacturas.setText(String.format("%.2f", sumaSaldosAnteriores));
-        txtTotalPagado.setText(String.format("%.2f", sumaMontosAbonados));
+        txtTotalFact.setText(String.format("%.2f", sumaSaldosAnteriores));
+        txtTotalPag.setText(String.format("%.2f", sumaMontosAbonados));
     }
 
     /**
@@ -396,22 +387,37 @@ public class TransaccionesCC extends javax.swing.JFrame {
         txtBuscarDocumento.setText("");
         txtTotalFacturas.setText("0.00");
         txtTotalPagado.setText("0.00");
+        txtIdCliente.setText("");
+        txtNombreCliente.setText("");
+        txtBuscarDocCliente.setText("");
+        txtTotalFacturas1.setText("0.00");
+        txtTotalPagado1.setText("0.00");
         if (txtMotivo != null) txtMotivo.setText("");
-        if (txtMotivo != null) txtMotivo.setText("");
+        if (txtMotivo1 != null) txtMotivo1.setText("");
 
         modeloPendientes.setRowCount(0);
         modeloAsignadas.setRowCount(0);
+        if (modeloPendientes1 != null) modeloPendientes1.setRowCount(0);
+        if (modeloAsignadas1 != null) modeloAsignadas1.setRowCount(0);
 
-        // Resetear las formas de pago de tblAplicacion
         DefaultTableModel modelAp = (DefaultTableModel) tblAplicacion.getModel();
         for (int i = 0; i < modelAp.getRowCount(); i++) {
             modelAp.setValueAt(0.00, i, 2);
-            if (i > 0) { // Dejar vacíos cheque y transferencia
+            if (i > 0) {
                 modelAp.setValueAt("", i, 3);
                 modelAp.setValueAt("", i, 4);
             }
         }
+        DefaultTableModel modelAp1 = (DefaultTableModel) tblAplicacion1.getModel();
+        for (int i = 0; i < modelAp1.getRowCount(); i++) {
+            modelAp1.setValueAt(0.00, i, 2);
+            if (i > 0) {
+                modelAp1.setValueAt("", i, 3);
+                modelAp1.setValueAt("", i, 4);
+            }
+        }
         if (dcFecha != null) dcFecha.setDate(new java.util.Date());
+        if (dcFecha1 != null) dcFecha1.setDate(new java.util.Date());
     }
     
     // --- MÉTODOS DE LAS OTRAS PESTAÑAS (ESTADO DE CUENTA Y MOVIMIENTOS) ---
@@ -472,15 +478,11 @@ public class TransaccionesCC extends javax.swing.JFrame {
         jcbClientes.addItem("0 - Seleccione Cliente");
 
         try {
-            java.util.Collection<?> listaGenerica = 
-                (java.util.Collection<?>) clientesDAO.listar();
+            java.util.List<Controlador.Bancos.clsCliente> listaGenerica = 
+                clientesDAO.listar();
 
             if (listaGenerica != null) {
-                for (Object obj : listaGenerica) {
-                    Controlador.Bancos.clsCliente c = 
-                        (Controlador.Bancos.clsCliente) obj;
-
-                    // ✔ getCliid() no getClid()
+                for (Controlador.Bancos.clsCliente c : listaGenerica) {
                     String itemFormateado = c.getClid() + " - " + c.getClinombre();
 
                     jcbCliente.addItem(itemFormateado);
@@ -1590,37 +1592,32 @@ public class TransaccionesCC extends javax.swing.JFrame {
 
     
     private void configurarComponentesAdicionalesRecibo() {
-        if (tblFacturasPendientes1 != null) {
-        String[] cols = {"ID Doc", "No. Factura", "Fecha Emisión", "Saldo Pendiente"};
-        DefaultTableModel modelo = new DefaultTableModel(cols, 0) {
+        String[] colsPend = {"ID Doc", "No. Factura", "Fecha Emisión", "Saldo Pendiente"};
+        modeloPendientes1 = new DefaultTableModel(colsPend, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
         };
-        tblFacturasPendientes1.setModel(modelo);
-    }
+        tblFacturasPendientes1.setModel(modeloPendientes1);
 
-    // Tabla tblFacturasAsignadas1 (tab Recibos Clientes)
-    if (tblFacturasAsignadas1 != null) {
-        String[] cols = {"ID Doc", "No. Factura", "Saldo Anterior", 
-                         "Monto Abonado", "Saldo Actualizado"};
-        DefaultTableModel modelo = new DefaultTableModel(cols, 0) {
+        String[] colsAsig = {"ID Doc", "No. Factura", "Saldo Anterior", "Monto Abonado", "Saldo Actualizado"};
+        modeloAsignadas1 = new DefaultTableModel(colsAsig, 0) {
             public boolean isCellEditable(int r, int c) { return c == 3; }
         };
-        tblFacturasAsignadas1.setModel(modelo);
-    }
+        tblFacturasAsignadas1.setModel(modeloAsignadas1);
 
-    // Tabla tblAplicacion1 (formas de pago de Recibos Clientes)
-    if (tblAplicacion1 != null) {
-        String[] cols = {"Código", "Descripción", "Valor", "No. Doc/Ref", "Banco"};
-        DefaultTableModel modelo = new DefaultTableModel(cols, 0) {
-            public boolean isCellEditable(int r, int c) { 
-                return c == 2 || c == 3 || c == 4; 
-            }
+        String[] colsApl = {"Código", "Descripción", "Valor", "No. Doc/Ref", "Banco"};
+        modeloAplicacion1 = new DefaultTableModel(colsApl, 0) {
+            public boolean isCellEditable(int r, int c) { return c == 2 || c == 3 || c == 4; }
         };
-        tblAplicacion1.setModel(modelo);
-        modelo.addRow(new Object[]{"EF", "EFECTIVO",              0.00, "N/A", "N/A"});
-        modelo.addRow(new Object[]{"CH", "CHEQUE",                0.00, "",    ""   });
-        modelo.addRow(new Object[]{"TR", "TRANSFERENCIA BANCARIA", 0.00, "",    ""   });
-    }
+        tblAplicacion1.setModel(modeloAplicacion1);
+        modeloAplicacion1.addRow(new Object[]{"EF", "EFECTIVO",              0.00, "N/A", "N/A"});
+        modeloAplicacion1.addRow(new Object[]{"CH", "CHEQUE",                0.00, "",    ""   });
+        modeloAplicacion1.addRow(new Object[]{"TR", "TRANSFERENCIA BANCARIA", 0.00, "",    ""   });
+
+        modeloAplicacion1.addTableModelListener(e -> {
+            if (e.getType() == javax.swing.event.TableModelEvent.UPDATE && e.getColumn() == 2) {
+                javax.swing.SwingUtilities.invokeLater(() -> validarMontosFormasDePago());
+            }
+        });
     }
     
     
@@ -1855,18 +1852,15 @@ public class TransaccionesCC extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscarDocClienteKeyPressed
 
     private void btnAgregarFactura1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarFactura1ActionPerformed
-        // TODO add your handling code here:
-        int filaSeleccionada = tblFacturasPendientes.getSelectedRow();
+        int filaSeleccionada = tblFacturasPendientes1.getSelectedRow();
         if (filaSeleccionada == -1) {
             JOptionPane.showMessageDialog(this, "Por favor, seleccione una factura de la lista de pendientes.", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // 2. Capturar los datos de la fila seleccionada basándose en el modelo de pendientes
-        // Columnas del modeloPendientes: [0: Cxccodigo, 1: Cxcnumero, 2: Saldo Pendiente, 3: Cxcfecha]
-        Object cxcCodigoObj = modeloPendientes.getValueAt(filaSeleccionada, 0);
-        Object cxcNumeroObj = modeloPendientes.getValueAt(filaSeleccionada, 1);
-        Object saldoPendienteObj = modeloPendientes.getValueAt(filaSeleccionada, 2);
+        Object cxcCodigoObj = modeloPendientes1.getValueAt(filaSeleccionada, 0);
+        Object cxcNumeroObj = modeloPendientes1.getValueAt(filaSeleccionada, 1);
+        Object saldoPendienteObj = modeloPendientes1.getValueAt(filaSeleccionada, 3);
 
         if (cxcCodigoObj == null) return;
 
@@ -1874,50 +1868,119 @@ public class TransaccionesCC extends javax.swing.JFrame {
         String cxcNumero = cxcNumeroObj != null ? cxcNumeroObj.toString() : "";
         double saldoAnterior = saldoPendienteObj != null ? Double.parseDouble(saldoPendienteObj.toString()) : 0.0;
 
-        // 3. Validar duplicados en la tabla inferior (modeloAsignadas)
-        for (int i = 0; i < modeloAsignadas.getRowCount(); i++) {
-            int codigoAsignado = Integer.parseInt(modeloAsignadas.getValueAt(i, 0).toString());
+        for (int i = 0; i < modeloAsignadas1.getRowCount(); i++) {
+            int codigoAsignado = Integer.parseInt(modeloAsignadas1.getValueAt(i, 0).toString());
             if (codigoAsignado == cxcCodigo) {
                 JOptionPane.showMessageDialog(this, "Esta factura ya ha sido agregada al recibo actual.", "Documento Duplicado", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
 
-        // 4. Transferir los datos e inicializar valores solicitados
-        // Columnas destino: [0: Cxccodigo, 1: Cxcnumero, 2: Saldo Anterior, 3: Monto Abonado, 4: Saldo Actualizado]
-        Object[] nuevaFilaAsignada = new Object[]{
+        modeloAsignadas1.addRow(new Object[]{
             cxcCodigo,
             cxcNumero,
             saldoAnterior,
-            0.0,             // Inicializar Monto Abonado en 0.0
-            saldoAnterior    // Saldo Actualizado es igual al Saldo Anterior inicialmente
-        };
+            0.0,
+            saldoAnterior
+        });
 
-        modeloAsignadas.addRow(nuevaFilaAsignada);
+        modeloPendientes1.removeRow(filaSeleccionada);
 
-        // 5. Remover la fila de la tabla superior para mantener la consistencia visual
-        modeloPendientes.removeRow(filaSeleccionada);
-
-        // 6. Recalcular los totales del formulario en tiempo real
         calcularTotalesRecibo();
     }//GEN-LAST:event_btnAgregarFactura1ActionPerformed
 
     private void btnQuitarFactura1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarFactura1ActionPerformed
-        // TODO add your handling code here:
+        int filaSeleccionada = tblFacturasAsignadas1.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione una factura de la tabla de asignadas.");
+            return;
+        }
+
+        Object idDoc = modeloAsignadas1.getValueAt(filaSeleccionada, 0);
+        Object noFactura = modeloAsignadas1.getValueAt(filaSeleccionada, 1);
+        double saldoAnterior = Double.parseDouble(modeloAsignadas1.getValueAt(filaSeleccionada, 2).toString());
+
+        modeloPendientes1.addRow(new Object[]{idDoc, noFactura, dcFecha1.getDate(), saldoAnterior});
+
+        modeloAsignadas1.removeRow(filaSeleccionada);
+        
+        calcularTotalesRecibo();
     }//GEN-LAST:event_btnQuitarFactura1ActionPerformed
 
     private void btnEliminar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminar1ActionPerformed
-        // TODO add your handling code here:
+        String idFacturaStr = JOptionPane.showInputDialog(this, "Ingrese el ID del documento (ID Doc) de la factura para revertir sus abonos activos:", "Anular Abonos de Factura", JOptionPane.QUESTION_MESSAGE);
+        
+        if (idFacturaStr == null || idFacturaStr.trim().isEmpty()) return;
+
+        int cxcCodigo;
+        try {
+            cxcCodigo = Integer.parseInt(idFacturaStr.trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El ID debe ser un número entero válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int confirmar = JOptionPane.showConfirmDialog(this, "¿Desea anular TODOS los abonos activos del documento No. " + cxcCodigo + " y restaurar su saldo?", "Confirmar Reversión", JOptionPane.YES_NO_OPTION);
+        if (confirmar != JOptionPane.YES_OPTION) return;
+
+        Connection con = null;
+        try {
+            con = cp.getConnection();
+            con.setAutoCommit(false);
+
+            double totalARevertir = 0;
+            String sqlSum = "SELECT SUM(Mccmonto) AS total FROM movimientoscc WHERE Mccorigenid = ? AND Mcctipo = 'ABONO' AND Mccestado = 'A'";
+            try (PreparedStatement psSum = con.prepareStatement(sqlSum)) {
+                psSum.setInt(1, cxcCodigo);
+                try (ResultSet rsSum = psSum.executeQuery()) {
+                    if (rsSum.next()) {
+                        totalARevertir = rsSum.getDouble("total");
+                    }
+                }
+            }
+
+            if (totalARevertir <= 0) {
+                JOptionPane.showMessageDialog(this, "No se encontraron abonos activos para anular en la factura seleccionada.", "Información", JOptionPane.INFORMATION_MESSAGE);
+                con.rollback();
+                return;
+            }
+
+            String sqlAnularAbonos = "UPDATE movimientoscc SET Mccestado = 'I' WHERE Mccorigenid = ? AND Mcctipo = 'ABONO' AND Mccestado = 'A'";
+            try (PreparedStatement psAnula = con.prepareStatement(sqlAnularAbonos)) {
+                psAnula.setInt(1, cxcCodigo);
+                psAnula.executeUpdate();
+            }
+
+            String sqlRestaurarSaldo = "UPDATE cuentasporcobrar SET Cpcsaldo = Cpcsaldo + ? WHERE Cpccodigo = ?";
+            try (PreparedStatement psRest = con.prepareStatement(sqlRestaurarSaldo)) {
+                psRest.setDouble(1, totalARevertir);
+                psRest.setInt(2, cxcCodigo);
+                psRest.executeUpdate();
+            }
+
+            con.commit();
+            JOptionPane.showMessageDialog(this, "¡Abonos anulados! Se restauraron Q " + totalARevertir + " al saldo pendiente de la factura No. " + cxcCodigo, "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            limpiarFormularioRecibo();
+
+        } catch (Exception e) {
+            if (con != null) {
+                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al anular movimientos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            if (con != null) {
+                try { con.close(); } catch (SQLException e) { e.printStackTrace(); }
+            }
+        }
     }//GEN-LAST:event_btnEliminar1ActionPerformed
 
     private void btnProcesarReciboClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcesarReciboClienteActionPerformed
-        // TODO add your handling code here:
-        if (modeloAsignadas.getRowCount() == 0) {
+        if (modeloAsignadas1.getRowCount() == 0) {
         JOptionPane.showMessageDialog(this, "No hay documentos asignados para procesar en este recibo.", "Error", JOptionPane.ERROR_MESSAGE);
         return;
         }
 
-        // Validar el ID del cliente antes de comenzar la transacción
         String idClienteStr = txtIdCliente.getText().trim();
         if (idClienteStr.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Debe especificar un cliente válido.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1925,98 +1988,81 @@ public class TransaccionesCC extends javax.swing.JFrame {
         }
         int cliId = Integer.parseInt(idClienteStr);
 
-        // Definición de sentencias SQL basadas estrictamente en tu diccionario de datos real
         String sqlInsertMovimiento = "INSERT INTO movimientoscc (Mccfecha, Mccmonto, Mcctipo, Mccconcepto, Mccestado, Mccsaldo, Cliid, Procodigo, Acrecodigo, Venid, TTid, Mccmodulo, Mccorigenid) "
                                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        String sqlUpdateSaldoCxc = "UPDATE cuentasporcobrar SET Cppsaldopendiente = ? WHERE Cpccodigo = ?";
+        String sqlUpdateSaldoCxc = "UPDATE cuentasporcobrar SET Cpcsaldo = ? WHERE Cpccodigo = ?";
 
         Connection con = null;
 
         try {
-            // Obtener conexión mediante tu instancia y método exacto configurado
             con = cp.getConnection();
-
-            // DESACTIVAR el AutoCommit para gestionar la transacción de forma manual explícita
             con.setAutoCommit(false);
 
-            // Uso de bloques Try-with-resources para asegurar liberación óptima de cursores y PreparedStatements
             try (PreparedStatement psInsert = con.prepareStatement(sqlInsertMovimiento);
                  PreparedStatement psUpdate = con.prepareStatement(sqlUpdateSaldoCxc)) {
 
                 java.sql.Timestamp fechaActual = new java.sql.Timestamp(new java.util.Date().getTime());
                 boolean tieneRegistrosParaProcesar = false;
 
-                // 2. Iterar sobre las filas de la tabla de asignaciones
-                for (int i = 0; i < modeloAsignadas.getRowCount(); i++) {
-                    int cxcCodigo = Integer.parseInt(modeloAsignadas.getValueAt(i, 0).toString());
-                    double saldoAnterior = Double.parseDouble(modeloAsignadas.getValueAt(i, 2).toString());
-                    double montoAbonado = Double.parseDouble(modeloAsignadas.getValueAt(i, 3).toString());
-                    double saldoActualizado = Double.parseDouble(modeloAsignadas.getValueAt(i, 4).toString());
+                for (int i = 0; i < modeloAsignadas1.getRowCount(); i++) {
+                    int cxcCodigo = Integer.parseInt(modeloAsignadas1.getValueAt(i, 0).toString());
+                    double saldoAnterior = Double.parseDouble(modeloAsignadas1.getValueAt(i, 2).toString());
+                    double montoAbonado = Double.parseDouble(modeloAsignadas1.getValueAt(i, 3).toString());
+                    double saldoActualizado = Double.parseDouble(modeloAsignadas1.getValueAt(i, 4).toString());
 
-                    // Regla de negocio requerida: Procesar únicamente montos mayores a 0
                     if (montoAbonado > 0) {
                         tieneRegistrosParaProcesar = true;
 
-                        // --- PARÁMETROS PARA LA INSERCIÓN EN MOVIMIENTOSCC ---
-                        psInsert.setTimestamp(1, fechaActual); // Mccfecha
-                        psInsert.setDouble(2, montoAbonado);   // Mccmonto
-                        psInsert.setString(3, "ABONO");        // Mcctipo (Enum)
-                        psInsert.setString(4, txtMotivo1.getText().trim().isEmpty() ? "ABONO A FACTURA REF: " + cxcCodigo : txtMotivo1.getText().trim()); // Mccconcepto
-                        psInsert.setString(5, "A");            // Mccestado (char(1) - Activo)
-                        psInsert.setDouble(6, saldoActualizado); // Mccsaldo calculado
+                        psInsert.setTimestamp(1, fechaActual);
+                        psInsert.setDouble(2, montoAbonado);
+                        psInsert.setString(3, "ABONO");
+                        psInsert.setString(4, txtMotivo1.getText().trim().isEmpty() ? "ABONO A FACTURA REF: " + cxcCodigo : txtMotivo1.getText().trim());
+                        psInsert.setString(5, "A");
+                        psInsert.setDouble(6, saldoActualizado);
 
-                        // Claves Foráneas e Integridad de Entidades
-                        psInsert.setInt(7, cliId);             // Cliid (Cliente asociado)
+                        psInsert.setInt(7, cliId);
+                        psInsert.setNull(8, java.sql.Types.INTEGER);
+                        psInsert.setNull(9, java.sql.Types.INTEGER);
+                        psInsert.setNull(10, java.sql.Types.INTEGER);
 
-                        // Aplicar setNull de forma estricta para campos que corresponden a Proveedores/Acreedores en este módulo
-                        psInsert.setNull(8, java.sql.Types.INTEGER);  // Procodigo -> NULL
-                        psInsert.setNull(9, java.sql.Types.INTEGER);  // Acrecodigo -> NULL
-                        psInsert.setNull(10, java.sql.Types.INTEGER); // Venid -> NULL
+                        psInsert.setInt(11, obtenerTTid("CC", "ABONO"));
+                        psInsert.setString(12, "CC");
+                        psInsert.setInt(13, cxcCodigo);
 
-                        psInsert.setInt(11, obtenerTTid("CC", "ABONO")); // TTid (ID Tipo de Transacción según lógica interna)
-                        psInsert.setString(12, "CC");          // Mccmodulo (Enum)
-                        psInsert.setInt(13, cxcCodigo);        // Mccorigenid (Código del documento de origen)
+                        psInsert.addBatch();
 
-                        psInsert.addBatch(); // Agregar al lote de inserciones
+                        psUpdate.setDouble(1, saldoActualizado);
+                        psUpdate.setInt(2, cxcCodigo);
 
-                        // --- PARÁMETROS PARA LA ACTUALIZACIÓN EN CUENTASPORCOBRAR ---
-                        psUpdate.setDouble(1, saldoActualizado); // Nuevo valor de Cxcsaldopendiente
-                        psUpdate.setInt(2, cxcCodigo);          // Llave primaria en WHERE (Cpccodigo)
-
-                        psUpdate.addBatch(); // Agregar al lote de actualizaciones
+                        psUpdate.addBatch();
                     }
                 }
 
-                // 3. Ejecutar los lotes (Batch) si se procesó al menos un abono válido
                 if (tieneRegistrosParaProcesar) {
                     psInsert.executeBatch();
                     psUpdate.executeBatch();
 
-                    // Confirmación exitosa de la transacción en la Base de Datos
                     con.commit();
                     JOptionPane.showMessageDialog(this, "El recibo de cobro del cliente ha sido procesado y asentado con éxito.", "Transacción Exitosa", JOptionPane.INFORMATION_MESSAGE);
 
-                    // Limpiar la interfaz gráfica del formulario
                     limpiarFormularioRecibo(); 
                 } else {
                     JOptionPane.showMessageDialog(this, "No se ejecutó ninguna acción debido a que los montos abonados están en 0.00.", "Información", JOptionPane.INFORMATION_MESSAGE);
-                    con.rollback(); // Liberar bloqueos por seguridad
+                    con.rollback();
                 }
 
             } catch (SQLException batchEx) {
-                // Rollback en caso de errores internos del lote (Batch)
                 if (con != null) {
                     con.rollback();
                 }
-                throw batchEx; // Redirecciona al catch principal
+                throw batchEx;
             }
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error crítico en transaccionalidad JDBC (Rollback Ejecutado):\n" + e.getMessage(), "SQL Syntax / Integrity Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         } finally {
-            // Restaurar el estado de la conexión antes de cerrarla o devolverla al pool
             if (con != null) {
                 try {
                     con.setAutoCommit(true);

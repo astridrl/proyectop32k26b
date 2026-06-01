@@ -14,7 +14,6 @@ import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import static java.util.FormatProcessor.FMT;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
